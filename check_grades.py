@@ -91,7 +91,7 @@ class grades():
             open("tmp.txt", 'w').close()
 
 
-        clear = lambda: os.system('cls')
+        clear = lambda: os.system('clear')
         clear()
 
         # Souper wird konfiguriert
