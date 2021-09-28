@@ -1,2 +1,2 @@
-web: python forever.py
+web: python server.py
 worker: python forever.py 
