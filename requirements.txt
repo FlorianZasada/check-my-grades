@@ -4,3 +4,4 @@ requests==2.22.0
 selenium==3.141.0
 prettytable==2.1.0
 boto==2.49.0
+Flask==1.1.2
