@@ -50,15 +50,15 @@ class grades():
         options = webdriver.ChromeOptions()
 
         options.binary_location  = os.environ.get('GOOGLE_CHROME_PATH')
-        options.add_argument('--disable-gpu')
-        options.add_argument('--no-sandbox')
         options.add_argument('--headless')
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--no-sandbox')
+        
 
 
         # Öffnen des Browsers sowie den Seiten
-        url = os.environ.get('QIS_URL')
         self.driver = webdriver.Chrome(executable_path=os.environ.get('CHROMEDRIVER_PATH'), chrome_options=options)
-        self.driver.get(url)
+        self.driver.get('https://qisserver.htwk-leipzig.de/qisserver/rds?state=user&type=0')
 
 
         # Anmeldung auf QIS
