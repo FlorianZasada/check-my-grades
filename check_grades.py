@@ -11,17 +11,29 @@ import os
 
 from modules.mod_automail import automail
 from modules.mod_loading_bar import loading_bar
+import re
 
 from datetime import date, datetime
 
 from exceptions import NoGradeFoundException, NoModuleFoundException
 
-from .local._localconfig import *
 
 
 class grades():
 
     def __init__(self):
+        config_items = ["QIS_uname", "QIS_pword", "QIS_url", "notirobi_mail", "notirobi_pword"]
+        keys = []
+        self.config_item_dict = {}
+        
+        f = open(r"C:\Windows\System32\cmd.exe\_localconfig.txt", "r")
+        for x in f:
+            a = re.search('"(.*?)"', x).group(0).replace('\"', '')
+            keys.append(a)
+
+        for i in range(len(config_items)):
+            self.config_item_dict[config_items[i]] = keys[i]
+
         now = datetime.now()
         datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
         self.main()
@@ -43,8 +55,8 @@ class grades():
 
 
         # Anmeldung auf QIS
-        input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(QIS_uname)
-        input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(QIS_pword)
+        input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(self.config_item_dict["QIS_uname"])
+        input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(self.config_item_dict["QIS_pword"])
         weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
 
         # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
@@ -156,7 +168,7 @@ class grades():
         self.continous_check()
             
     def sendmail(self, exam, note):
-        user_credentials = {"email" : notirobi_mail, "password" : notirobi_pword}
+        user_credentials = {"email" : self.config_item_dict["notirobi_mail"], "password" : self.config_item_dict["notirobi_pword"]}
         to_mail = ["florian.zasada@gmail.com", "florian.zasada@telekom.de", "Peter.Prumbach@telekom.de", "mail@peterprumbach.de", "fabian.lauret@telekom.de", "fabian@lauret-home.de", "georg.zibell@telekom.de", "georg.zibell@icloud.com"]
         subject = f"{exam} - NOTE IST RAUS!!!"
         msg = f"""
