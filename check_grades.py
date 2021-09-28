@@ -19,15 +19,6 @@ from datetime import date, datetime
 
 from exceptions import NoGradeFoundException, NoModuleFoundException
 
-
-s3 = S3Connection(
-    QIS_USER = os.environ['QIS_USER'],
-    QIS_PASSWORD = os.environ['QIS_PASSWORD'],
-    NOTI_MAIL = os.environ['NOTI_MAIL'],
-    NOTI_PASSWORD = os.environ["NOTI_PASSWORD"],
-    QIS_URL = os.environ["QIS_URL"]
-)
-
 class grades():
 
     def __init__(self):
