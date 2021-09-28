@@ -55,6 +55,7 @@ class grades():
 
         # Öffnen des Browsers sowie den Seiten
         url = os.environ['QIS_URL']
+        print(url)
         self.driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
         self.driver.get(url)
 
