@@ -16,7 +16,7 @@ from datetime import date, datetime
 
 from exceptions import NoGradeFoundException, NoModuleFoundException
 
-from _localconfig import *
+from local._localconfig import *
 
 
 class grades():
