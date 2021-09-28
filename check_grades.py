@@ -4,22 +4,19 @@ import requests
 from selenium import webdriver
 import time
 from prettytable import PrettyTable
-import win32com.client as win32
-from win32com.client import Dispatch
+
 from selenium.webdriver.chrome.options import Options
 import sys
 import os
 
 from modules.mod_automail import automail
-from modules.mod_notifier import notifier
-from modules.mod_send_whatsapp import send_whatsapp
 from modules.mod_loading_bar import loading_bar
 
 from datetime import date, datetime
 
 from exceptions import NoGradeFoundException, NoModuleFoundException
 
-import _localconfig
+from _localconfig import *
 
 
 class grades():
@@ -40,14 +37,14 @@ class grades():
 
         # Öffnen des Browsers sowie den Seiten
         driver_path = r"chromedriver.exe"
-        url = _localconfig.QIS_url
+        url = QIS_url
         self.driver = webdriver.Chrome(executable_path=driver_path, chrome_options=chrome_options)
         self.driver.get(url)
 
 
         # Anmeldung auf QIS
-        input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(_localconfig.QIS_uname)
-        input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(_localconfig.QIS_pword)
+        input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(QIS_uname)
+        input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(QIS_pword)
         weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
 
         # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
@@ -130,12 +127,6 @@ class grades():
                 if examName not in z:
                     print(examName +": Note = "+ grade.strip())
                     grade_with_dot_notation = grade.strip().replace(",", ".")
-
-                    # Falls Eintrag nicht leer, Wndows Popup (0, Text, Überschrift, 0 = Only 'Ok')
-                    try:
-                        notifier("Note ist da!", "Für "+examName+" hast du die Note " + grade.strip() + " bekommen.", 3)
-                    except:
-                        pass
                     self.sendmail(examName, grade_with_dot_notation)
                     counter+=1
                 else:
@@ -165,7 +156,7 @@ class grades():
         self.continous_check()
             
     def sendmail(self, exam, note):
-        user_credentials = {"email" : _localconfig.notirobi_mail, "password" : _localconfig.notirobi_pword}
+        user_credentials = {"email" : notirobi_mail, "password" : notirobi_pword}
         to_mail = ["florian.zasada@gmail.com", "florian.zasada@telekom.de", "Peter.Prumbach@telekom.de", "mail@peterprumbach.de", "fabian.lauret@telekom.de", "fabian@lauret-home.de", "georg.zibell@telekom.de", "georg.zibell@icloud.com"]
         subject = f"{exam} - NOTE IST RAUS!!!"
         msg = f"""
