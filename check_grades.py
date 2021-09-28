@@ -45,7 +45,7 @@ class grades():
         """
 
         GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
-        CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
+        CHROMEDRIVER_PATH = '/app/chromedriver'
 
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument('--disable-gpu')
@@ -55,8 +55,7 @@ class grades():
 
         # Öffnen des Browsers sowie den Seiten
         url = os.environ['QIS_URL']
-        # self.driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
-        self.driver = webdriver.Chrome()
+        self.driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
         self.driver.get(url)
 
 
