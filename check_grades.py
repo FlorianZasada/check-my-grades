@@ -44,13 +44,18 @@ class grades():
 
         """
 
+        GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
+        CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
+
         chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("--headless")
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.binary_location = GOOGLE_CHROME_PATH
+
 
         # Öffnen des Browsers sowie den Seiten
-        driver_path = r"chromedriver.exe"
         url = os.environ['QIS_URL']
-        self.driver = webdriver.Chrome(executable_path=driver_path, chrome_options=chrome_options)
+        self.driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
         self.driver.get(url)
 
 
