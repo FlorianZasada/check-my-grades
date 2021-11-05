@@ -17,7 +17,7 @@ from boto.s3.connection import S3Connection
 
 from datetime import date, datetime
 
-from localconfig import config
+
 from exceptions import NoGradeFoundException, NoModuleFoundException
 
 class grades():
