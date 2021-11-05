@@ -158,6 +158,8 @@ class grades():
                 continue
 
         if str(avg) == "0" and os.stat("tmp.txt").st_size != 0:
+            print(str(avg))
+            print(os.stat("tmp.txt").st_size)
             raise Exception("Kein Zugriff auf QIS!")
         
         # Tabelle wird geprintet    
