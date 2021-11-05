@@ -17,6 +17,7 @@ from boto.s3.connection import S3Connection
 
 from datetime import date, datetime
 
+from localconfig import config
 from exceptions import NoGradeFoundException, NoModuleFoundException
 
 class grades():
@@ -26,7 +27,7 @@ class grades():
         # keys = []
         # self.config_item_dict = {}
         
-        # f = open(r"C:\Windows\System32\cmd.exe\_localconfig.txt", "r")
+        # f = open("check-my-grades\localconfig.txt", "r")
         # for x in f:
         #     a = re.search('"(.*?)"', x).group(0).replace('\"', '')
         #     keys.append(a)
@@ -47,6 +48,8 @@ class grades():
         # GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
         # CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
 
+        
+
         options = webdriver.ChromeOptions()
 
         options.binary_location  = os.environ.get('GOOGLE_CHROME_PATH')
@@ -58,7 +61,7 @@ class grades():
 
         # Öffnen des Browsers sowie den Seiten
         self.driver = webdriver.Chrome(executable_path=os.environ.get('CHROMEDRIVER_PATH'), chrome_options=options)
-        self.driver.get('https://qisserver.htwk-leipzig.de/qisserver/rds?state=user&type=0')
+        self.driver.get(config['QIS_url'])
 
 
         # Anmeldung auf QIS
@@ -68,7 +71,7 @@ class grades():
 
         # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
         leistung_btn = self.driver.find_element_by_xpath("""//*[@id="main"]/div/div[2]/div[2]/a""").click()
-        semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
+        semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[1]/a[1]""").click()
 
 
         # Funktionsaufruf (Keine Parameter notwendig (Dauerschleife in sich selbst))
@@ -209,10 +212,6 @@ class grades():
 <br>eingetragen!"""
 
         automail(user_credentials, an_privat, subject_privat, msg_privat)
-        try:
-            send_whatsapp(f"Für {exam} hast du die Note {note_str} bekommen!")
-        except:
-            pass
         
         
 if __name__ == '__main__':
