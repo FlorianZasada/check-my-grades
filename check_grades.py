@@ -37,7 +37,6 @@ class grades():
 
         now = datetime.now()
         datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
-        self.send_heartbeat(1)
         self.main()
 
     def send_heartbeat(self, id):
