@@ -37,8 +37,13 @@ class grades():
 
         now = datetime.now()
         datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
+        self.send_heartbeat(1)
         self.main()
 
+    def send_heartbeat(self, id):
+        now = datetime.datetime.now()
+        requests.put("http://127.0.0.1:3001/bots/timestamp/"+str(id), data={'bot_time' : str(now)}, verify=False)  
+    
     def main(self):
         """
             Es wird auf die chromedriver.exe zugegriffen. Diese muss zwingend im Root Ordner liegen.
@@ -48,7 +53,7 @@ class grades():
         # GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
         # CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
 
-        
+        self.send_heartbeat(1)
 
         options = webdriver.ChromeOptions()
 
@@ -89,7 +94,7 @@ class grades():
             Und ruft sich erneut auf.
 
         """
-
+        self.send_heartbeat(1)
         if not os.path.exists("tmp.txt"):
             open("tmp.txt", 'w').close()
 
@@ -160,6 +165,8 @@ class grades():
         if str(avg) == "0" and os.stat("tmp.txt").st_size != 1:
             raise Exception("Kein Zugriff auf QIS!")
         
+        
+        self.send_heartbeat(1)
         # Tabelle wird geprintet    
         print(x)            
 
@@ -178,6 +185,7 @@ class grades():
         self.continous_check()
             
     def sendmail(self, exam, note):
+        self.send_heartbeat(1)
         user_credentials = {"email" : os.environ['NOTI_MAIL'], "password" : os.environ["NOTI_PASSWORD"]}
         to_mail = ["florian.zasada@gmail.com", "florian.zasada@telekom.de", "Peter.Prumbach@telekom.de", "mail@peterprumbach.de", "fabian.lauret@telekom.de", "fabian@lauret-home.de", "georg.zibell@telekom.de", "georg.zibell@icloud.com"]
         subject = f"{exam} - NOTE IST RAUS!!!"
