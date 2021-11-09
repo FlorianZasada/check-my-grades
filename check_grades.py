@@ -15,7 +15,6 @@ import re
 
 from boto.s3.connection import S3Connection
 
-import datetime
 from datetime import date, datetime
 
 
@@ -41,7 +40,7 @@ class grades():
         self.main()
 
     def send_heartbeat(self, id):
-        now = datetime.datetime.now()
+        now = datetime.now()
         requests.put("http://127.0.0.1:3001/bots/timestamp/"+str(id), data={'bot_time' : str(now)}, verify=False)  
     
     def main(self):
