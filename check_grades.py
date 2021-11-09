@@ -44,6 +44,7 @@ class grades():
     def send_heartbeat(self, id):
         now = datetime.datetime.now()
         requests.put("http://127.0.0.1:3001/bots/timestamp/"+str(id), data={'bot_time' : str(now)}, verify=False)
+        print("Heartbeat sent")
 
     def main(self):
         """
