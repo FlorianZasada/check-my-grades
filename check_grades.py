@@ -52,7 +52,7 @@ class grades():
         # GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
         # CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
 
-        self.send_heartbeat(1)
+#         self.send_heartbeat(1)
 
         options = webdriver.ChromeOptions()
 
@@ -93,7 +93,7 @@ class grades():
             Und ruft sich erneut auf.
 
         """
-        self.send_heartbeat(1)
+#         self.send_heartbeat(1)
         if not os.path.exists("tmp.txt"):
             open("tmp.txt", 'w').close()
 
@@ -165,7 +165,7 @@ class grades():
             raise Exception("Kein Zugriff auf QIS!")
         
         
-        self.send_heartbeat(1)
+#         self.send_heartbeat(1)
         # Tabelle wird geprintet    
         print(x)            
 
@@ -184,7 +184,7 @@ class grades():
         self.continous_check()
             
     def sendmail(self, exam, note):
-        self.send_heartbeat(1)
+#         self.send_heartbeat(1)
         user_credentials = {"email" : os.environ['NOTI_MAIL'], "password" : os.environ["NOTI_PASSWORD"]}
         to_mail = ["florian.zasada@gmail.com", "florian.zasada@telekom.de", "Peter.Prumbach@telekom.de", "mail@peterprumbach.de", "fabian.lauret@telekom.de", "fabian@lauret-home.de", "georg.zibell@telekom.de", "georg.zibell@icloud.com"]
         subject = f"{exam} - NOTE IST RAUS!!!"
