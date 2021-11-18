@@ -1,6 +1,7 @@
 from email import message
 from bs4 import BeautifulSoup
 import requests
+import json
 from selenium import webdriver
 import time
 from prettytable import PrettyTable
