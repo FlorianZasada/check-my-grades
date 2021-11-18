@@ -43,7 +43,7 @@ class grades():
 
     def send_heartbeat(self):
         try:
-            now = str(datetime.datetime.now())
+            now = str(datetime.now())
             payload = {"id": BOT_ID, "bot_last_mes": now}
             headers = {"Content-Type": "application/json"}
             res = requests.put('https://floalog.me/api/bots', data=json.dumps(payload), headers=headers)
