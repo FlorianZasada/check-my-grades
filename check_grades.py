@@ -41,7 +41,7 @@ class grades():
         datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
         self.main()
 
-    def send_heartbeat(self, id):
+    def send_heartbeat(self):
         try:
             now = str(datetime.datetime.now())
             payload = {"id": BOT_ID, "bot_last_mes": now}
@@ -101,7 +101,7 @@ class grades():
             Und ruft sich erneut auf.
 
         """
-#         self.send_heartbeat(1)
+        self.send_heartbeat()
         if not os.path.exists("tmp.txt"):
             open("tmp.txt", 'w').close()
 
@@ -173,7 +173,7 @@ class grades():
             raise Exception("Kein Zugriff auf QIS!")
         
         
-#         self.send_heartbeat(1)
+        self.send_heartbeat()
         # Tabelle wird geprintet    
         print(x)            
 
@@ -192,7 +192,7 @@ class grades():
         self.continous_check()
             
     def sendmail(self, exam, note):
-#         self.send_heartbeat(1)
+        self.send_heartbeat()
         user_credentials = {"email" : os.environ['NOTI_MAIL'], "password" : os.environ["NOTI_PASSWORD"]}
         to_mail = ["florian.zasada@gmail.com", "florian.zasada@telekom.de", "Peter.Prumbach@telekom.de", "mail@peterprumbach.de", "fabian.lauret@telekom.de", "fabian@lauret-home.de", "georg.zibell@telekom.de", "georg.zibell@icloud.com"]
         subject = f"{exam} - NOTE IST RAUS!!!"
