@@ -20,6 +20,8 @@ from datetime import date, datetime
 
 from exceptions import NoGradeFoundException, NoModuleFoundException
 
+BOT_ID = "recfDz9mQYpPU99pu"
+
 class grades():
 
     def __init__(self):
@@ -40,8 +42,14 @@ class grades():
         self.main()
 
     def send_heartbeat(self, id):
-        now = datetime.now()
-        requests.put("http://127.0.0.1:3001/bots/timestamp/"+str(id), data={'bot_time' : str(now)}, verify=False)  
+        try:
+            now = str(datetime.datetime.now())
+            payload = {"id": BOT_ID, "bot_last_mes": now}
+            headers = {"Content-Type": "application/json"}
+            res = requests.put('https://floalog.me/api/bots', data=json.dumps(payload), headers=headers)
+            print(res.content)
+          except Exception as ex:
+            print(ex)
     
     def main(self):
         """
