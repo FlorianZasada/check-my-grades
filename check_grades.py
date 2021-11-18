@@ -20,6 +20,9 @@ from datetime import date, datetime
 
 from exceptions import NoGradeFoundException, NoModuleFoundException
 
+BOT_ID = "recfDz9mQYpPU99pu"
+
+
 class grades():
 
     def __init__(self):
@@ -41,10 +44,15 @@ class grades():
         self.send_heartbeat(1)
         self.main()
         
-    def send_heartbeat(self, id):
-        now = datetime.datetime.now()
-        requests.put("http://127.0.0.1:3001/bots/timestamp/"+str(id), data={'bot_time' : str(now)}, verify=False)
-        print("Heartbeat sent")
+    def send_heartbeat(self):
+        try:
+            now = str(datetime.datetime.now())
+            payload = {"id": BOT_ID, "bot_last_mes": now}
+            headers = {"Content-Type": "application/json"}
+
+            res = requests.put('https://floalog.me/api/bots', data=json.dumps(payload), headers=headers)
+          except:
+            pass
 
     def main(self):
         """
@@ -52,7 +60,7 @@ class grades():
 
         """
         
-        self.send_heartbeat(1)
+        self.send_heartbeat()
 
         # GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
         # CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
