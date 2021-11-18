@@ -16,7 +16,7 @@ import re
 
 from boto.s3.connection import S3Connection
 
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 
 from exceptions import NoGradeFoundException, NoModuleFoundException
@@ -44,7 +44,7 @@ class grades():
 
     def send_heartbeat(self):
         try:
-            now = str(datetime.now())
+            now = str(datetime.now() + timedelta(hours=1))
             payload = {"id": BOT_ID, "bot_last_mes": now}
             headers = {"Content-Type": "application/json"}
             res = requests.put('https://floalog.me/api/bots', data=json.dumps(payload), headers=headers)
