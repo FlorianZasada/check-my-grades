@@ -48,7 +48,7 @@ class grades():
             headers = {"Content-Type": "application/json"}
             res = requests.put('https://floalog.me/api/bots', data=json.dumps(payload), headers=headers)
             print(res.content)
-          except Exception as ex:
+        except Exception as ex:
             print(ex)
     
     def main(self):
