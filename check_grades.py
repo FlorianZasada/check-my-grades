@@ -61,7 +61,7 @@ class grades():
 
         # Öffnen des Browsers sowie den Seiten
         self.driver = webdriver.Chrome(executable_path=os.environ.get('CHROMEDRIVER_PATH'), chrome_options=options)
-        self.driver.get(config['QIS_url'])
+        self.driver.get(config['QIS_URL'])
 
 
         # Anmeldung auf QIS
