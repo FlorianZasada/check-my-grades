@@ -20,24 +20,33 @@ from datetime import date, datetime
 from localconfig import config
 from exceptions import NoGradeFoundException, NoModuleFoundException
 
+
+import firebase_admin
+from firebase_admin import credentials, firestore
+
 class grades():
 
     def __init__(self):
-        # config_items = ["QIS_uname", "QIS_pword", "QIS_url", "notirobi_mail", "notirobi_pword"]
-        # keys = []
-        # self.config_item_dict = {}
         
-        # f = open("check-my-grades\localconfig.txt", "r")
-        # for x in f:
-        #     a = re.search('"(.*?)"', x).group(0).replace('\"', '')
-        #     keys.append(a)
-
-        # for i in range(len(config_items)):
-        #     self.config_item_dict[config_items[i]] = keys[i]
-
+        cred = credentials.Certificate('bot_creds.json')
+        firebase_admin.initialize_app(cred)
+        
+        self.db = firestore.client()
+        
+        
         now = datetime.now()
         datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
         self.main()
+        
+        
+    def send_heartbeat(self):
+        now = datetime.now()
+        datestring =  now.strftime("%d.%m.%Y, %H:%M:%S") 
+        
+        data = {"last_state" : datestring}
+        doc_ref = self.db.collection(u'bots').document(u'check_grades')
+        doc_ref.update(data)
+        
 
     def main(self):
         """
@@ -48,7 +57,7 @@ class grades():
         # GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
         # CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
 
-        
+        self.send_heartbeat()
 
         options = webdriver.ChromeOptions()
 
@@ -70,7 +79,7 @@ class grades():
         weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
 
         # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
-        leistung_btn = self.driver.find_element_by_xpath("""//*[@id="main"]/div/div[2]/div[2]/a""").click()
+        leistung_btn = self.driver.find_element_by_xpath("""//*[@id="navi-main"]/li[3]/a""").click()
         semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[1]/a[1]""").click()
 
 
@@ -89,6 +98,7 @@ class grades():
             Und ruft sich erneut auf.
 
         """
+        self.send_heartbeat()
 
         if not os.path.exists("tmp.txt"):
             open("tmp.txt", 'w').close()
