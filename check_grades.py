@@ -1,6 +1,7 @@
 from email import message
 from bs4 import BeautifulSoup
 import requests
+import json
 from selenium import webdriver
 import time
 from prettytable import PrettyTable
@@ -16,13 +17,18 @@ import re
 from boto.s3.connection import S3Connection
 
 from datetime import date, datetime
+import pytz
 
-from localconfig import config
+
 from exceptions import NoGradeFoundException, NoModuleFoundException
 
+<<<<<<< HEAD
 
 import firebase_admin
 from firebase_admin import credentials, firestore
+=======
+BOT_ID = "recfDz9mQYpPU99pu"
+>>>>>>> 26a2dec6b01ee27304b49107dfab938fc824f7d7
 
 class grades():
 
@@ -48,6 +54,16 @@ class grades():
         doc_ref.update(data)
         
 
+#     def send_heartbeat(self):
+#         try:
+#             tz = pytz.timezone('Europe/Berlin')
+#             now = str(datetime.now(tz))
+#             payload = {"id": BOT_ID, "bot_last_mes": now}
+#             headers = {"Content-Type": "application/json"}
+#             res = requests.put('https://floalog.me/api/bots', data=json.dumps(payload), headers=headers)
+#         except Exception as ex:
+#             print(ex)
+    
     def main(self):
         """
             Es wird auf die chromedriver.exe zugegriffen. Diese muss zwingend im Root Ordner liegen.
@@ -69,8 +85,8 @@ class grades():
 
 
         # Öffnen des Browsers sowie den Seiten
-        self.driver = webdriver.Chrome(executable_path=os.environ.get('CHROMEDRIVER_PATH'), chrome_options=options)
-        self.driver.get(config['QIS_URL'])
+        self.driver = webdriver.Chrome(executable_path=os.environ.get('CHROMEDRIVER_PATH'), options=options)
+        self.driver.get(os.environ['QIS_URL'])
 
 
         # Anmeldung auf QIS
@@ -167,9 +183,11 @@ class grades():
             else:
                 continue
 
-        if str(avg) == "0" and os.stat("tmp.txt").st_size != 0:
+        if str(avg) == "0" and os.stat("tmp.txt").st_size != 1:
             raise Exception("Kein Zugriff auf QIS!")
         
+        
+        #self.send_heartbeat()
         # Tabelle wird geprintet    
         print(x)            
 
@@ -188,6 +206,7 @@ class grades():
         self.continous_check()
             
     def sendmail(self, exam, note):
+        #self.send_heartbeat()
         user_credentials = {"email" : os.environ['NOTI_MAIL'], "password" : os.environ["NOTI_PASSWORD"]}
         to_mail = ["florian.zasada@gmail.com", "florian.zasada@telekom.de", "Peter.Prumbach@telekom.de", "mail@peterprumbach.de", "fabian.lauret@telekom.de", "fabian@lauret-home.de", "georg.zibell@telekom.de", "georg.zibell@icloud.com"]
         subject = f"{exam} - NOTE IST RAUS!!!"
