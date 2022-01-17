@@ -70,7 +70,6 @@ class grades():
         # GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
         # CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
 
-        self.send_heartbeat()
 
         options = webdriver.ChromeOptions()
 
@@ -78,6 +77,7 @@ class grades():
         options.add_argument('--headless')
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--no-sandbox')
+        options.add_argument("--window-size=1920x1080")
         
 
 
