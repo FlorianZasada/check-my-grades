@@ -16,7 +16,7 @@ import re
 
 from boto.s3.connection import S3Connection
 
-from datetime import date, datetime
+from datetime import datetime, timedelta
 import pytz
 
 
@@ -43,7 +43,7 @@ class grades():
         
         
     def send_heartbeat(self):
-        now = datetime.now()
+        now = datetime.now() + timedelta(hours=1)
         datestring =  now.strftime("%d.%m.%Y, %H:%M:%S") 
         
         data = {"last_state" : datestring}
