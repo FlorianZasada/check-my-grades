@@ -21,14 +21,11 @@ import pytz
 
 
 from exceptions import NoGradeFoundException, NoModuleFoundException
-
-<<<<<<< HEAD
-
 import firebase_admin
 from firebase_admin import credentials, firestore
-=======
+
+
 BOT_ID = "recfDz9mQYpPU99pu"
->>>>>>> 26a2dec6b01ee27304b49107dfab938fc824f7d7
 
 class grades():
 
