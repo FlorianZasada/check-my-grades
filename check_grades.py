@@ -89,11 +89,12 @@ class grades():
         # Anmeldung auf QIS
         input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(os.environ['QIS_USER'])
         input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(os.environ['QIS_PASSWORD'])
-        weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
+        weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
+        
 
         # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
         leistung_btn = self.driver.find_element_by_xpath("""//*[@id="navi-main"]/li[3]/a""").click()
-        semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[1]/a[1]""").click()
+        semester = self.driver.find_element_by_xpath("""//*[@id="a"]/form/ul/li/ul/li/ul/li[1]/a[1]""").click()
 
 
         # Funktionsaufruf (Keine Parameter notwendig (Dauerschleife in sich selbst))
