@@ -74,9 +74,9 @@ class grades():
         options = webdriver.ChromeOptions()
 
         options.binary_location  = os.environ.get('GOOGLE_CHROME_PATH')
-        #options.add_argument('--headless')
-        #options.add_argument('--disable-dev-shm-usage')
-        #options.add_argument('--no-sandbox')
+        options.add_argument('--headless')
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--no-sandbox')
         options.add_argument("--window-size=1920x1080")
         
 
@@ -90,16 +90,12 @@ class grades():
         input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(os.environ['QIS_USER'])
         input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(os.environ['QIS_PASSWORD'])
         weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
-        
 
         # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
         leistung_btn = self.driver.find_element_by_xpath("""//*[@id="navi-main"]/li[3]/a""").click()
-        try:
-            semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
+        semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
            
-        except:
-            print("Finde keinen Semester Button")
-            return
+   
         # Funktionsaufruf (Keine Parameter notwendig (Dauerschleife in sich selbst))
         now = datetime.now()
         f = open("restart.txt", "a+")
