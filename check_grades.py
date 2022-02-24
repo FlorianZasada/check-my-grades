@@ -94,7 +94,7 @@ class grades():
 
         # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
         leistung_btn = self.driver.find_element_by_xpath("""//*[@id="navi-main"]/li[3]/a""").click()
-        semester = self.driver.find_element_by_xpath("""//*[@id="a"]/form/ul/li/ul/li/ul/li[1]/a[1]""").click()
+        semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
 
 
         # Funktionsaufruf (Keine Parameter notwendig (Dauerschleife in sich selbst))
