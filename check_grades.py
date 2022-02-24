@@ -94,9 +94,12 @@ class grades():
 
         # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
         leistung_btn = self.driver.find_element_by_xpath("""//*[@id="navi-main"]/li[3]/a""").click()
-        semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
-
-
+        try:
+            semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
+           
+        except:
+            print("Finde keinen Semester Button")
+            return
         # Funktionsaufruf (Keine Parameter notwendig (Dauerschleife in sich selbst))
         now = datetime.now()
         f = open("restart.txt", "a+")
