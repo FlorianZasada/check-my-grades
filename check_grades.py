@@ -157,7 +157,6 @@ class grades():
 
 
             # Hinzufügen zur Tabelle
-            self._set_state("Add data to table")
             a = x.add_row([examName, grade.strip()])
 
             # Prüft, ob für Modul immernoch kein Eintrag
@@ -198,6 +197,7 @@ class grades():
         print("Durchschnitt: ~ "+str(avg))
         
         # Warte 30 Sekunden
+        self._set_state("Waiting 30 seconds...")
         print("\nWarte 30 Sekunden...") 
         loading_bar(50, 0.5)
         clear()
@@ -207,6 +207,7 @@ class grades():
         time.sleep(3)
         
         #wiederholter Aufruf für Dauercheck
+        self._set_state("Reload...")
         self.continous_check()
             
     def sendmail(self, exam, note):
