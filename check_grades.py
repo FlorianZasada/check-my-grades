@@ -56,15 +56,10 @@ class grades():
         doc_ref.update(data)
         
 
-#     def send_heartbeat(self):
-#         try:
-#             tz = pytz.timezone('Europe/Berlin')
-#             now = str(datetime.now(tz))
-#             payload = {"id": BOT_ID, "bot_last_mes": now}
-#             headers = {"Content-Type": "application/json"}
-#             res = requests.put('https://floalog.me/api/bots', data=json.dumps(payload), headers=headers)
-#         except Exception as ex:
-#             print(ex)
+    def _set_state(self, message):
+        data = {"status" : message}
+        doc_ref = self.db.collection(u'bots').document(u'check_grades')
+        doc_ref.update(data)
     
     def main(self):
         """
@@ -89,12 +84,14 @@ class grades():
         # Öffnen des Browsers sowie den Seiten
         self.driver = webdriver.Chrome(executable_path=os.environ.get('CHROMEDRIVER_PATH'), options=options)
         self.driver.get(os.environ['QIS_URL'])
+        self._set_state("Open URL")
 
 
         # Anmeldung auf QIS
         input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(os.environ['QIS_USER'])
         input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(os.environ['QIS_PASSWORD'])
         weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
+        self._set_state("Logged in into QIS")
         
 
         # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
@@ -107,6 +104,7 @@ class grades():
         f = open("restart.txt", "a+")
         f.write(f"reboot - {now} - \n\n")
         f.close()
+        self._set_state("Start continous check...")
         self.continous_check()
 
 
@@ -129,6 +127,7 @@ class grades():
         # Souper wird konfiguriert
         self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
         root = self.soup.findAll("tr", {"class" : ["MP", "PL"]})
+        self._set_state("Get all Data from page")
 
         # Tabelle wird erstellt um eine schönere Dokumentation in der CMD zu ermöglichen
         x = PrettyTable()
@@ -158,6 +157,7 @@ class grades():
 
 
             # Hinzufügen zur Tabelle
+            self._set_state("Add data to table")
             a = x.add_row([examName, grade.strip()])
 
             # Prüft, ob für Modul immernoch kein Eintrag
@@ -187,6 +187,7 @@ class grades():
                 continue
 
         if str(avg) == "0" and os.stat("tmp.txt").st_size != 1:
+            self._set_state("Kein Zugriff auf QIS!")
             raise Exception("Kein Zugriff auf QIS!")
         
         
@@ -209,6 +210,7 @@ class grades():
         self.continous_check()
             
     def sendmail(self, exam, note):
+        self._set_state("Send Mail")
         #self.send_heartbeat()
         user_credentials = {"email" : os.environ['NOTI_MAIL'], "password" : os.environ["NOTI_PASSWORD"]}
         to_mail = ["florian.zasada@gmail.com", "florian.zasada@telekom.de", "Peter.Prumbach@telekom.de", "mail@peterprumbach.de", "fabian.lauret@telekom.de", "fabian@lauret-home.de", "georg.zibell@telekom.de", "georg.zibell@icloud.com"]
