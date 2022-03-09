@@ -37,7 +37,7 @@ class grades():
         self.db = firestore.client()
         
         
-        now = datetime.now()
+        now = datetime.now() + timedelta(hours=1)
         datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
         
         data = {"started" : datestring}
