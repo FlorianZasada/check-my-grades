@@ -39,6 +39,11 @@ class grades():
         
         now = datetime.now()
         datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
+        
+        data = {"started" : datestring}
+        doc_ref = self.db.collection(u'bots').document(u'check_grades')
+        doc_ref.update(data)
+        
         self.main()
         
         
