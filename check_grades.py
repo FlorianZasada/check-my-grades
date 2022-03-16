@@ -1,23 +1,19 @@
 from email import message
 from bs4 import BeautifulSoup
-import requests
-import json
+
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+
 import time
 from prettytable import PrettyTable
 
-from selenium.webdriver.chrome.options import Options
-import sys
 import os
 
 from modules.mod_automail import automail
 from modules.mod_loading_bar import loading_bar
-import re
-
 from boto.s3.connection import S3Connection
-
 from datetime import datetime, timedelta
-import pytz
 
 
 from exceptions import NoGradeFoundException, NoModuleFoundException
@@ -43,8 +39,6 @@ class grades():
         data = {"started" : datestring}
         doc_ref = self.db.collection(u'bots').document(u'check_grades')
         doc_ref.update(data)
-        
-        self.main()
         
         
     def send_heartbeat(self):
@@ -82,7 +76,11 @@ class grades():
 
 
         # Öffnen des Browsers sowie den Seiten
-        self.driver = webdriver.Chrome(executable_path=os.environ.get('CHROMEDRIVER_PATH'), options=options)
+        # neu service
+        s = Service(os.environ.get('CHROMEDRIVER_PATH'))
+        self.driver = webdriver.Chrome(service=s,options=options)
+
+        # self.driver = webdriver.Chrome(executable_path=os.environ.get('CHROMEDRIVER_PATH'), options=options)
         self.driver.get(os.environ['QIS_URL'])
         self._set_state("Open URL")
 
@@ -250,5 +248,10 @@ class grades():
         
         
 if __name__ == '__main__':
-    grades()
+    main = grades()
+    for _ in range(20):
+        try: 
+            main.main()
+        except Exception as ex:
+            raise ex
 
