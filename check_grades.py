@@ -61,41 +61,44 @@ class grades():
 
         """
 
+        try:
+            options = webdriver.ChromeOptions()
 
-        options = webdriver.ChromeOptions()
-
-        options.binary_location  = os.environ.get('GOOGLE_CHROME_PATH')
-        options.add_argument('--headless')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--no-sandbox')
-        options.add_argument("--window-size=1920x1080")
-        
-
-
-        # Öffnen des Browsers sowie den Seiten
-        self.driver = webdriver.Chrome(executable_path=os.environ.get('CHROMEDRIVER_PATH'), options=options)
-        self.driver.get(os.environ['QIS_URL'])
-        self._set_state("Open URL")
+            options.binary_location  = os.environ.get('GOOGLE_CHROME_PATH')
+            options.add_argument('--headless')
+            options.add_argument('--disable-dev-shm-usage')
+            options.add_argument('--no-sandbox')
+            options.add_argument("--window-size=1920x1080")
+            
 
 
-        # Anmeldung auf QIS
-        input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(os.environ['QIS_USER'])
-        input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(os.environ['QIS_PASSWORD'])
-        weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
-        self._set_state("Logged in into QIS")
-        
+            # Öffnen des Browsers sowie den Seiten
+            self.driver = webdriver.Chrome(executable_path=os.environ.get('CHROMEDRIVER_PATH'), options=options)
+            self.driver.get(os.environ['QIS_URL'])
+            self._set_state("Open URL")
 
-        # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
-        leistung_btn = self.driver.find_element_by_xpath("""//*[@id="navi-main"]/li[3]/a""").click()
-        semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
-           
-   
-        # Funktionsaufruf (Keine Parameter notwendig (Dauerschleife in sich selbst))
-        now = datetime.now()
-        f = open("restart.txt", "a+")
-        f.write(f"reboot - {now} - \n\n")
-        f.close()
-        self._set_state("Start continous check...")
+
+            # Anmeldung auf QIS
+            input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(os.environ['QIS_USER'])
+            input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(os.environ['QIS_PASSWORD'])
+            weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
+            self._set_state("Logged in into QIS")
+            
+
+            # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
+            leistung_btn = self.driver.find_element_by_xpath("""//*[@id="navi-main"]/li[3]/a""").click()
+            semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
+            
+    
+            # Funktionsaufruf (Keine Parameter notwendig (Dauerschleife in sich selbst))
+            now = datetime.now()
+            f = open("restart.txt", "a+")
+            f.write(f"reboot - {now} - \n\n")
+            f.close()
+            self._set_state("Start continous check...")
+        except Exception as ex:
+            self._set_state(ex)
+            return
         self.continous_check()
 
 
@@ -106,99 +109,103 @@ class grades():
             Und ruft sich erneut auf.
 
         """
-        self.send_heartbeat()
+        try:
+            self.send_heartbeat()
 
-        if not os.path.exists("tmp.txt"):
-            open("tmp.txt", 'w').close()
-
-
-        clear = lambda: print("\033c")
-        clear()
-
-        # Souper wird konfiguriert
-        self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
-        root = self.soup.findAll("tr", {"class" : ["MP", "PL"]})
-        self._set_state("Get all Data from page")
-
-        # Tabelle wird erstellt um eine schönere Dokumentation in der CMD zu ermöglichen
-        x = PrettyTable()
-        x.field_names = ["Modul", "Note"]
+            if not os.path.exists("tmp.txt"):
+                open("tmp.txt", 'w').close()
 
 
+            clear = lambda: print("\033c")
+            clear()
 
-        # Hier wird druch die Module iteriert
-        counter = 1
-        avg = 0
-        for i in root:
-            for _ in range(5):
-                examName = i.find("span", {"class" : "examName"}).getText()
-                if examName:
-                    break
-                time.sleep(.5)
-            else:
-                raise NoModuleFoundException
+            # Souper wird konfiguriert
+            self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+            root = self.soup.findAll("tr", {"class" : ["MP", "PL"]})
+            self._set_state("Get all Data from page")
 
-            for _ in range(5):
-                grade = i.find("td", {"class" : "grade collapsed"}).getText()
-                if grade:
-                    break
-                time.sleep(.5)
-            else:
-                raise NoGradeFoundException
+            # Tabelle wird erstellt um eine schönere Dokumentation in der CMD zu ermöglichen
+            x = PrettyTable()
+            x.field_names = ["Modul", "Note"]
 
 
-            # Hinzufügen zur Tabelle
-            a = x.add_row([examName, grade.strip()])
 
-            # Prüft, ob für Modul immernoch kein Eintrag
-            if grade.strip() != "-":
-                # tmp erzeugen
-                f = open("tmp.txt", "r+")
-                z = f.read()
-                if examName in z:
-                    pass
+            # Hier wird druch die Module iteriert
+            counter = 1
+            avg = 0
+            for i in root:
+                for _ in range(5):
+                    examName = i.find("span", {"class" : "examName"}).getText()
+                    if examName:
+                        break
+                    time.sleep(.5)
                 else:
-                    f.write(examName+"\n")
-                    f.close()
+                    raise NoModuleFoundException
 
-                grade_for_avg = grade.strip().replace(",", ".")
-                avg += float(grade_for_avg) / counter
-
-
-                if examName not in z:
-                    print(examName +": Note = "+ grade.strip())
-                    grade_with_dot_notation = grade.strip().replace(",", ".")
-                    self.sendmail(examName, grade_with_dot_notation)
-                    counter+=1
+                for _ in range(5):
+                    grade = i.find("td", {"class" : "grade collapsed"}).getText()
+                    if grade:
+                        break
+                    time.sleep(.5)
                 else:
-                    counter+=1
+                    raise NoGradeFoundException
+
+
+                # Hinzufügen zur Tabelle
+                a = x.add_row([examName, grade.strip()])
+
+                # Prüft, ob für Modul immernoch kein Eintrag
+                if grade.strip() != "-":
+                    # tmp erzeugen
+                    f = open("tmp.txt", "r+")
+                    z = f.read()
+                    if examName in z:
+                        pass
+                    else:
+                        f.write(examName+"\n")
+                        f.close()
+
+                    grade_for_avg = grade.strip().replace(",", ".")
+                    avg += float(grade_for_avg) / counter
+
+
+                    if examName not in z:
+                        print(examName +": Note = "+ grade.strip())
+                        grade_with_dot_notation = grade.strip().replace(",", ".")
+                        self.sendmail(examName, grade_with_dot_notation)
+                        counter+=1
+                    else:
+                        counter+=1
+                        continue
+                else:
                     continue
-            else:
-                continue
 
-        if str(avg) == "0" and os.stat("tmp.txt").st_size != 1:
-            self._set_state("Kein Zugriff auf QIS!")
-            raise Exception("Kein Zugriff auf QIS!")
-        
-        
-        #self.send_heartbeat()
-        # Tabelle wird geprintet    
-        print(x)            
+            if str(avg) == "0" and os.stat("tmp.txt").st_size != 1:
+                self._set_state("Kein Zugriff auf QIS!")
+                raise Exception("Kein Zugriff auf QIS!")
+            
+            
+            #self.send_heartbeat()
+            # Tabelle wird geprintet    
+            print(x)            
 
-        print("Durchschnitt: ~ "+str(avg))
-        
-        # Warte 30 Sekunden
-        self._set_state("Waiting 30 seconds...")
-        print("\nWarte 30 Sekunden...") 
-        loading_bar(50, 0.5)
-        clear()
+            print("Durchschnitt: ~ "+str(avg))
+            
+            # Warte 30 Sekunden
+            self._set_state("Waiting 30 seconds...")
+            print("\nWarte 30 Sekunden...") 
+            loading_bar(50, 0.5)
+            clear()
 
-        # Aktualisiere das Fenster
-        self.driver.refresh()
-        time.sleep(3)
-        
-        #wiederholter Aufruf für Dauercheck
-        self._set_state("Reload...")
+            # Aktualisiere das Fenster
+            self.driver.refresh()
+            time.sleep(3)
+            
+            #wiederholter Aufruf für Dauercheck
+            self._set_state("Reload...")
+        except Exception as ex:
+            self._set_state(ex)
+            return
         self.continous_check()
             
     def sendmail(self, exam, note):
