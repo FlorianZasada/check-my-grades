@@ -61,9 +61,6 @@ class grades():
 
         """
 
-        # GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
-        # CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
-
 
         options = webdriver.ChromeOptions()
 
@@ -76,11 +73,7 @@ class grades():
 
 
         # Öffnen des Browsers sowie den Seiten
-        # neu service
-        s = Service(os.environ.get('CHROMEDRIVER_PATH'))
-        self.driver = webdriver.Chrome(service=s,options=options)
-
-        # self.driver = webdriver.Chrome(executable_path=os.environ.get('CHROMEDRIVER_PATH'), options=options)
+        self.driver = webdriver.Chrome(executable_path=os.environ.get('CHROMEDRIVER_PATH'), options=options)
         self.driver.get(os.environ['QIS_URL'])
         self._set_state("Open URL")
 
