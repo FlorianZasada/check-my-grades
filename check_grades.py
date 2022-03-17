@@ -124,7 +124,7 @@ class grades():
             f.close()
             self._set_state("Start continous check...")
         except Exception as ex:
-            self._set_state(ex)
+            self._set_state(":efs: Genereller Fehler beim Durchlauf")
             return
         self.continous_check()
 
