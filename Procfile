@@ -1,2 +1,2 @@
 web: python server.py
-worker: python forever.py 
+worker: python check_grades.py
