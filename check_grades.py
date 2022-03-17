@@ -99,10 +99,9 @@ class grades():
 
             # Anmeldung auf QIS
             try:
-                QISLogin(self.driver, os.environ['QIS_USER'], os.environ['QIS_PASSWORD']).run()
-                # input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(os.environ['QIS_USER'])
-                # input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(os.environ['QIS_PASSWORD'])
-                # weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
+                input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(os.environ['QIS_USER'])
+                input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(os.environ['QIS_PASSWORD'])
+                weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
                 self._set_state("Logged in into QIS")
             except:
                 self._set_state(":efs: Anmeldung fehlgeschlagen")
