@@ -92,7 +92,7 @@ class grades():
                 self._set_state("Open URL")
             except Exception as ex:
                 self._set_state(ex)
-                return ex
+                raise
 
 
             # Anmeldung auf QIS
@@ -103,7 +103,7 @@ class grades():
                 self._set_state("Logged in into QIS")
             except Exception as ex:
                 self._set_state(ex)
-                return ex
+                raise
             
 
             # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
@@ -112,7 +112,7 @@ class grades():
                 semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
             except Exception as ex:
                 self._set_state(ex)
-                return ex
+                raise
     
             # Funktionsaufruf (Keine Parameter notwendig (Dauerschleife in sich selbst))
             now = datetime.now()
@@ -205,8 +205,8 @@ class grades():
                     continue
 
             if str(avg) == "0" and os.stat("tmp.txt").st_size != 1:
-                self._set_state("Kein Zugriff auf QIS!")
-                raise Exception("Kein Zugriff auf QIS!")
+                self._set_state("Duchschnitt stimmt nicht mit Tmp zusammen!")
+                raise Exception("Duchschnitt stimmt nicht mit Tmp zusammen!")
             
             
             #self.send_heartbeat()
@@ -230,6 +230,8 @@ class grades():
         except Exception as ex:
             self._set_state(ex)
             return
+
+
         self.continous_check()
             
     def sendmail(self, exam, note):

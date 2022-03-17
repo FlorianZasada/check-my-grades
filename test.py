@@ -1,3 +1,5 @@
+from configparser import NoSectionError
+from logging import exception
 from time import time
 
 
@@ -11,8 +13,12 @@ class test():
             try:
                 print("rin")
                 time.sleep(3)
-                print("nuchmal run")
-                raise Exception
+                try:
+                    print("nuchmal run")
+                    raise NoSectionError
+                except Exception as ex:
+                    raise
+                
                 
             except:
                 return
