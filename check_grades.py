@@ -26,7 +26,7 @@ BOT_ID = "recfDz9mQYpPU99pu"
 class grades():
 
     def __init__(self):
-        self.automated_restarts = 0
+        self.automated_restarts = -1
         # Credentials JSON
         cred = credentials.Certificate('bot_creds.json')
         firebase_admin.initialize_app(cred)
