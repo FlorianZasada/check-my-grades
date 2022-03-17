@@ -23,7 +23,7 @@ from firebase_admin import credentials, firestore
 
 
 BOT_ID = "recfDz9mQYpPU99pu"
-automated_restarts = -1
+
 
 class grades():
 
@@ -32,6 +32,7 @@ class grades():
         cred = credentials.Certificate('bot_creds.json')
         firebase_admin.initialize_app(cred)
         self.db = firestore.client()
+        self.automated_restarts = -1
         
         
         now = datetime.now() + timedelta(hours=1)
@@ -71,9 +72,8 @@ class grades():
         """
 
         # Erhöhe Restarts und füge der Datenbank hinzu
-        global automated_restarts
-        automated_restarts += 1
-        self._set_restart(automated_restarts)
+        self.automated_restarts += 1
+        self._set_restart(self.automated_restarts)
 
 
         try:
@@ -228,7 +228,7 @@ class grades():
             time.sleep(3)
             
         except Exception as ex:
-            self._set_state(":efs:")
+            self._set_state(":efs: " + str(ex))
             return
 
 
