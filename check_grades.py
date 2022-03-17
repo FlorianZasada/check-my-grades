@@ -91,7 +91,7 @@ class grades():
                 self.driver.get(os.environ['QIS_URL'])
                 self._set_state("Open URL")
             except Exception as ex:
-                self._set_state(":efs:")
+                self._set_state(":efs: URL konnte nicht geöffnet werden")
                 raise
 
 
@@ -102,7 +102,7 @@ class grades():
                 weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
                 self._set_state("Logged in into QIS")
             except Exception as ex:
-                self._set_state(":efs:")
+                self._set_state(":efs: Anmeldung fehlgeschlagen")
                 raise
             
 
@@ -111,7 +111,7 @@ class grades():
                 leistung_btn = self.driver.find_element_by_xpath("""//*[@id="navi-main"]/li[3]/a""").click()
                 semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
             except Exception as ex:
-                self._set_state(":efs:")
+                self._set_state(":efs: Fehler bei Navigation in QIS")
                 raise
     
             # Funktionsaufruf (Keine Parameter notwendig (Dauerschleife in sich selbst))
@@ -205,7 +205,7 @@ class grades():
                     continue
 
             if str(avg) == "0" and os.stat("tmp.txt").st_size != 1:
-                self._set_state("Duchschnitt stimmt nicht mit Tmp zusammen!")
+                self._set_state(":efs: Duchschnitt stimmt nicht mit Tmp zusammen!")
                 raise Exception("Duchschnitt stimmt nicht mit Tmp zusammen!")
             
             
@@ -224,10 +224,7 @@ class grades():
             # Aktualisiere das Fenster
             self.driver.refresh()
             time.sleep(3)
-            raise Exception
             
-            #wiederholter Aufruf für Dauercheck
-            self._set_state("Reload...")
         except Exception as ex:
             self._set_state(":efs:")
             return
@@ -236,7 +233,7 @@ class grades():
         self.continous_check()
             
     def sendmail(self, exam, note):
-        self._set_state("Send Mail")
+        self._set_state("! Sende Mail !")
         #self.send_heartbeat()
         user_credentials = {"email" : os.environ['NOTI_MAIL'], "password" : os.environ["NOTI_PASSWORD"]}
         to_mail = ["florian.zasada@gmail.com", "florian.zasada@telekom.de", "Peter.Prumbach@telekom.de", "mail@peterprumbach.de", "fabian.lauret@telekom.de", "fabian@lauret-home.de", "georg.zibell@telekom.de", "georg.zibell@icloud.com"]
@@ -276,7 +273,7 @@ class grades():
         
 if __name__ == '__main__':
     main = grades()
-    for _ in range(20):
+    for _ in range(100):
         try:
             main.main()
         except:
