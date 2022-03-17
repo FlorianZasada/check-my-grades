@@ -12,7 +12,6 @@ import os
 
 from modules.mod_automail import automail
 from modules.mod_loading_bar import loading_bar
-from modules.mod_QISLogin import QISLogin
 from boto.s3.connection import S3Connection
 from datetime import datetime, timedelta
 
