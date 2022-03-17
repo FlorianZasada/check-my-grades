@@ -224,6 +224,7 @@ class grades():
             # Aktualisiere das Fenster
             self.driver.refresh()
             time.sleep(3)
+            raise Exception
             
             #wiederholter Aufruf für Dauercheck
             self._set_state("Reload...")
