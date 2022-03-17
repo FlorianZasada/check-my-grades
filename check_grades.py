@@ -12,6 +12,7 @@ import os
 
 from modules.mod_automail import automail
 from modules.mod_loading_bar import loading_bar
+from modules.mod_QISLogin import QISLogin
 from boto.s3.connection import S3Connection
 from datetime import datetime, timedelta
 
@@ -98,9 +99,10 @@ class grades():
 
             # Anmeldung auf QIS
             try:
-                input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(os.environ['QIS_USER'])
-                input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(os.environ['QIS_PASSWORD'])
-                weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
+                QISLogin(os.environ['QIS_USER'], os.environ['QIS_PASSWORD']).run()
+                # input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(os.environ['QIS_USER'])
+                # input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(os.environ['QIS_PASSWORD'])
+                # weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
                 self._set_state("Logged in into QIS")
             except:
                 self._set_state(":efs: Anmeldung fehlgeschlagen")
