@@ -59,8 +59,7 @@ class grades():
 
     def _set_restart(self, i):
         # Speichert die Restart Variabel in die Datenbank
-        print("SET RESTART ", str(i))
-        data = {"automated_restarted" : str(i)}
+        data = {"automated_restarts" : str(i)}
         doc_ref = self.db.collection(u'bots').document(u'check_grades')
         doc_ref.update(data)
     
