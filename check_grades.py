@@ -74,21 +74,32 @@ class grades():
 
             # Öffnen des Browsers sowie den Seiten
             self.driver = webdriver.Chrome(executable_path=os.environ.get('CHROMEDRIVER_PATH'), options=options)
-            self.driver.get(os.environ['QIS_URL'])
-            self._set_state("Open URL")
+            try:
+                self.driver.get(os.environ['QIS_URL'])
+                self._set_state("Open URL")
+            except Exception as ex:
+                self._set_state(ex)
+                return ex
 
 
             # Anmeldung auf QIS
-            input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(os.environ['QIS_USER'])
-            input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(os.environ['QIS_PASSWORD'])
-            weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
-            self._set_state("Logged in into QIS")
+            try:
+                input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(os.environ['QIS_USER'])
+                input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(os.environ['QIS_PASSWORD'])
+                weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
+                self._set_state("Logged in into QIS")
+            except Exception as ex:
+                self._set_state(ex)
+                return ex
             
 
             # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
-            leistung_btn = self.driver.find_element_by_xpath("""//*[@id="navi-main"]/li[3]/a""").click()
-            semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
-            
+            try:
+                leistung_btn = self.driver.find_element_by_xpath("""//*[@id="navi-main"]/li[3]/a""").click()
+                semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
+            except Exception as ex:
+                self._set_state(ex)
+                return ex
     
             # Funktionsaufruf (Keine Parameter notwendig (Dauerschleife in sich selbst))
             now = datetime.now()
