@@ -22,11 +22,11 @@ from firebase_admin import credentials, firestore
 
 
 BOT_ID = "recfDz9mQYpPU99pu"
+automated_restarts = -1
 
 class grades():
 
     def __init__(self):
-        self.automated_restarts = -1
         # Credentials JSON
         cred = credentials.Certificate('bot_creds.json')
         firebase_admin.initialize_app(cred)
@@ -70,8 +70,9 @@ class grades():
         """
 
         # Erhöhe Restarts und füge der Datenbank hinzu
-        self.automated_restarts += 1
-        self._set_restart(self.automated_restarts)
+        global automated_restarts
+        automated_restarts += 1
+        self._set_restart(automated_restarts)
 
 
         try:
@@ -90,9 +91,9 @@ class grades():
             try:
                 self.driver.get(os.environ['QIS_URL'])
                 self._set_state("Open URL")
-            except Exception as ex:
+            except:
                 self._set_state(":efs: URL konnte nicht geöffnet werden")
-                raise
+                raise Exception
 
 
             # Anmeldung auf QIS
@@ -101,18 +102,18 @@ class grades():
                 input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(os.environ['QIS_PASSWORD'])
                 weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
                 self._set_state("Logged in into QIS")
-            except Exception as ex:
+            except:
                 self._set_state(":efs: Anmeldung fehlgeschlagen")
-                raise
+                raise Exception
             
 
             # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
             try:
                 leistung_btn = self.driver.find_element_by_xpath("""//*[@id="navi-main"]/li[3]/a""").click()
                 semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
-            except Exception as ex:
+            except:
                 self._set_state(":efs: Fehler bei Navigation in QIS")
-                raise
+                raise Exception
     
             # Funktionsaufruf (Keine Parameter notwendig (Dauerschleife in sich selbst))
             now = datetime.now()
