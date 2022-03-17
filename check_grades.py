@@ -69,6 +69,7 @@ class grades():
             Es wird auf die chromedriver.exe zugegriffen. Diese muss zwingend im Root Ordner liegen.
 
         """
+        self.send_heartbeat()
 
         # Erhöhe Restarts und füge der Datenbank hinzu
         self.automated_restarts += 1
