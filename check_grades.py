@@ -22,11 +22,11 @@ from firebase_admin import credentials, firestore
 
 
 BOT_ID = "recfDz9mQYpPU99pu"
-automated_restarts = 0
 
 class grades():
 
     def __init__(self):
+        self.automated_restarts = 0
         # Credentials JSON
         cred = credentials.Certificate('bot_creds.json')
         firebase_admin.initialize_app(cred)
@@ -59,6 +59,7 @@ class grades():
 
     def _set_restart(self, i):
         # Speichert die Restart Variabel in die Datenbank
+        print("SET RESTART ", str(i))
         data = {"automated_restarted" : str(i)}
         doc_ref = self.db.collection(u'bots').document(u'check_grades')
         doc_ref.update(data)
@@ -68,12 +69,10 @@ class grades():
             Es wird auf die chromedriver.exe zugegriffen. Diese muss zwingend im Root Ordner liegen.
 
         """
-        global automated_restarts
-        
 
         # Erhöhe Restarts und füge der Datenbank hinzu
-        automated_restarts += 1
-        self._set_restart(automated_restarts)
+        self.automated_restarts += 1
+        self._set_restart(self.automated_restarts)
 
 
         try:
@@ -275,11 +274,8 @@ class grades():
         
 if __name__ == '__main__':
     main = grades()
-    i = 0
     for _ in range(20):
-        try: 
-            i+=1
-            
+        try:
             main.main()
         except Exception as ex:
             raise ex
