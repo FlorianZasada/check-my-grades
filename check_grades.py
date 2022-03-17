@@ -22,14 +22,14 @@ from firebase_admin import credentials, firestore
 
 
 BOT_ID = "recfDz9mQYpPU99pu"
+automated_restarts = 0
 
 class grades():
 
     def __init__(self):
-        
+        # Credentials JSON
         cred = credentials.Certificate('bot_creds.json')
         firebase_admin.initialize_app(cred)
-        
         self.db = firestore.client()
         
         
@@ -42,6 +42,7 @@ class grades():
         
         
     def send_heartbeat(self):
+        # Sendet eine Heartbeat Message an die Datenbank
         now = datetime.now() + timedelta(hours=1)
         datestring =  now.strftime("%d.%m.%Y, %H:%M:%S") 
         
@@ -51,7 +52,14 @@ class grades():
         
 
     def _set_state(self, message):
+        # Speichert einen Status in der Datenbank für die App
         data = {"status" : message}
+        doc_ref = self.db.collection(u'bots').document(u'check_grades')
+        doc_ref.update(data)
+
+    def _set_restart(self, i):
+        # Speichert die Restart Variabel in die Datenbank
+        data = {"automated_restarted" : str(i)}
         doc_ref = self.db.collection(u'bots').document(u'check_grades')
         doc_ref.update(data)
     
@@ -60,6 +68,13 @@ class grades():
             Es wird auf die chromedriver.exe zugegriffen. Diese muss zwingend im Root Ordner liegen.
 
         """
+        global automated_restarts
+        
+
+        # Erhöhe Restarts und füge der Datenbank hinzu
+        automated_restarts += 1
+        self._set_restart(automated_restarts)
+
 
         try:
             options = webdriver.ChromeOptions()
@@ -121,11 +136,11 @@ class grades():
 
         """
         try:
+            # Sende Heartbeat
             self.send_heartbeat()
 
             if not os.path.exists("tmp.txt"):
                 open("tmp.txt", 'w').close()
-
 
             clear = lambda: print("\033c")
             clear()
@@ -260,8 +275,11 @@ class grades():
         
 if __name__ == '__main__':
     main = grades()
+    i = 0
     for _ in range(20):
         try: 
+            i+=1
+            
             main.main()
         except Exception as ex:
             raise ex
