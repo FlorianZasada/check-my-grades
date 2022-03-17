@@ -278,6 +278,6 @@ if __name__ == '__main__':
     for _ in range(20):
         try:
             main.main()
-        except Exception as ex:
-            raise ex
+        except:
+            raise
 
