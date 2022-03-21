@@ -6,6 +6,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
 import time
+import pytz
 from prettytable import PrettyTable
 
 import os
@@ -18,7 +19,9 @@ from datetime import datetime, timedelta
 
 from exceptions import NoGradeFoundException, NoModuleFoundException
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import credentials
+from google.cloud import firestore
+from firebase_admin import firestore
 
 
 BOT_ID = "recfDz9mQYpPU99pu"
@@ -31,20 +34,20 @@ class grades():
         cred = credentials.Certificate('bot_creds.json')
         firebase_admin.initialize_app(cred)
         self.db = firestore.client()
-        self.automated_restarts = -1
-        
-        
-        now = datetime.now() + timedelta(hours=1)
+
+        # Reset State
+        self._set_state("")
+        self._set_state("Starte...")
+
+        # Konfiguriert aktuellen Timestamp
+        tz = pytz.timezone('Europe/Berlin')
+        now = datetime.now(tz)
         datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
-        
-        data = {"started" : datestring}
-        doc_ref = self.db.collection(u'bots').document(u'check_grades')
-        doc_ref.update(data)
-        
         
     def send_heartbeat(self):
         # Sendet eine Heartbeat Message an die Datenbank
-        now = datetime.now() + timedelta(hours=1)
+        tz = pytz.timezone('Europe/Berlin')
+        now = datetime.now(tz)
         datestring =  now.strftime("%d.%m.%Y, %H:%M:%S") 
         
         data = {"last_state" : datestring}
@@ -58,11 +61,6 @@ class grades():
         doc_ref = self.db.collection(u'bots').document(u'check_grades')
         doc_ref.update(data)
 
-    def _set_restart(self, i):
-        # Speichert die Restart Variabel in die Datenbank
-        data = {"automated_restarts" : str(i)}
-        doc_ref = self.db.collection(u'bots').document(u'check_grades')
-        doc_ref.update(data)
     
     def main(self):
         """
@@ -71,27 +69,23 @@ class grades():
         """
         self.send_heartbeat()
 
-        # Erhöhe Restarts und füge der Datenbank hinzu
-        self.automated_restarts += 1
-        self._set_restart(self.automated_restarts)
-
-
         try:
             options = webdriver.ChromeOptions()
 
-            options.binary_location  = os.environ.get('GOOGLE_CHROME_PATH')
+            #options.binary_location  = os.environ.get('GOOGLE_CHROME_PATH')
             options.add_argument('--headless')
             options.add_argument('--disable-dev-shm-usage')
             options.add_argument('--no-sandbox')
             options.add_argument("--window-size=1920x1080")
             
-
+            chromedriver_path = "/usr/lib/chromium-browser/chromedriver"
+            qis_url = "https://qisserver.htwk-leipzig.de/qisserver/rds?state=user&type=0"
 
             # Öffnen des Browsers sowie den Seiten
-            self.driver = webdriver.Chrome(executable_path=os.environ.get('CHROMEDRIVER_PATH'), options=options)
+            self.driver = webdriver.Chrome(executable_path=chromedriver_path, options=options)
             try:
-                self.driver.get(os.environ['QIS_URL'])
-                self._set_state("Open URL")
+                self.driver.get(qis_url)
+                self._set_state("Öffne QIS URL")
             except:
                 self._set_state(":efs: URL konnte nicht geöffnet werden")
                 raise Exception
@@ -99,10 +93,10 @@ class grades():
 
             # Anmeldung auf QIS
             try:
-                input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(os.environ['QIS_USER'])
-                input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(os.environ['QIS_PASSWORD'])
+                input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys("fzasada")
+                input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys("4ZRpz7CR")
                 weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
-                self._set_state("Logged in into QIS")
+                self._set_state("QIS Login")
             except:
                 self._set_state(":efs: Anmeldung fehlgeschlagen")
                 raise Exception
@@ -118,13 +112,10 @@ class grades():
     
             # Funktionsaufruf (Keine Parameter notwendig (Dauerschleife in sich selbst))
             now = datetime.now()
-            f = open("restart.txt", "a+")
-            f.write(f"reboot - {now} - \n\n")
-            f.close()
-            self._set_state("Start continous check...")
+
         except Exception as ex:
             self._set_state(":efs: "+ str(ex))
-            return
+
         self.continous_check()
 
 
@@ -153,6 +144,8 @@ class grades():
             # Tabelle wird erstellt um eine schönere Dokumentation in der CMD zu ermöglichen
             x = PrettyTable()
             x.field_names = ["Modul", "Note"]
+
+
 
 
 
@@ -218,7 +211,7 @@ class grades():
             print("Durchschnitt: ~ "+str(avg))
             
             # Warte 30 Sekunden
-            self._set_state("Waiting 30 seconds...")
+            self._set_state("Warte 30 Sekunden...")
             print("\nWarte 30 Sekunden...") 
             loading_bar(50, 0.5)
             clear()
@@ -275,9 +268,4 @@ class grades():
         
 if __name__ == '__main__':
     main = grades()
-    for _ in range(100):
-        try:
-            main.main()
-        except:
-            raise
-
+    main.main()
