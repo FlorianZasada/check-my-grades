@@ -9,14 +9,12 @@ from google.cloud import firestore
 from firebase_admin import firestore
 
 BOT_ID = "recfDz9mQYpPU99pu"
-TOMORROW = "21.03.2022"
-
 
 class Forever():
     def __init__(self):
         # Initialisiere Firebase 
         
-        cred = credentials.Certificate('bot_creds.json')
+        cred = credentials.Certificate('/home/pi/bin/check-my-grades/bot_creds.json')
         firebase_admin.initialize_app(cred)
         self.db = firestore.client()
 
@@ -42,31 +40,16 @@ class Forever():
             now = datetime.datetime.now(tz)
             datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
             
-            # Leere History wenn neuer Tag
-            if self._check_new_day(datetime.date.today()):
-                history_data = {"history":[]}
-                self.doc_ref.update(history_data)
-
             # Starte Check_grades
             self.counter += 1
             if self.counter != 0:
                 self._set_restarts(self.counter)
                 self._set_history(now.strftime("%H:%M:%S"))
-            p = Popen("python check_grades.py", shell=True)
+            p = Popen("python /home/pi/bin/check-my-grades/check_grades.py", shell=True)
             clear()
             p.wait()
-            sleep(20)
+            sleep(10)
             
-    def _check_new_day(self, today):
-        global tomorrow
-        tm = datetime.date.today() + datetime.timedelta(days=1)
-        tomorrow = tm
-        if today == tomorrow:
-                tomorrow = today
-                return True
-        else:
-                return False
-
     def _set_history(self, datum):
         self.doc_ref.update({u'history': firestore.ArrayUnion([datum])})
 

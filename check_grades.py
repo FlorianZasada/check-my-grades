@@ -31,7 +31,7 @@ class grades():
 
     def __init__(self):
         # Credentials JSON
-        cred = credentials.Certificate('bot_creds.json')
+        cred = credentials.Certificate('/home/pi/bin/check-my-grades/bot_creds.json')
         firebase_admin.initialize_app(cred)
         self.db = firestore.client()
 
@@ -39,11 +39,16 @@ class grades():
         self._set_state("")
         self._set_state("Starte...")
 
+
         # Konfiguriert aktuellen Timestamp
         tz = pytz.timezone('Europe/Berlin')
         now = datetime.now(tz)
         datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
-        
+        self._set_state("starte Story")
+
+        # Starte Story
+        self.main()
+
     def send_heartbeat(self):
         # Sendet eine Heartbeat Message an die Datenbank
         tz = pytz.timezone('Europe/Berlin')
@@ -54,7 +59,6 @@ class grades():
         doc_ref = self.db.collection(u'bots').document(u'check_grades')
         doc_ref.update(data)
         
-
     def _set_state(self, message):
         # Speichert einen Status in der Datenbank für die App
         data = {"status" : message}
@@ -70,19 +74,21 @@ class grades():
         self.send_heartbeat()
 
         try:
-            options = webdriver.ChromeOptions()
+            opt = webdriver.ChromeOptions()
+            opt.add_argument('--headless')
+            opt.add_argument('--disable-dev-shm-usage')
+            opt.add_argument('--no-sandbox')
+            opt.add_argument("--window-size=1920x1080")
 
-            #options.binary_location  = os.environ.get('GOOGLE_CHROME_PATH')
-            options.add_argument('--headless')
-            options.add_argument('--disable-dev-shm-usage')
-            options.add_argument('--no-sandbox')
-            options.add_argument("--window-size=1920x1080")
-            
             chromedriver_path = "/usr/lib/chromium-browser/chromedriver"
             qis_url = "https://qisserver.htwk-leipzig.de/qisserver/rds?state=user&type=0"
 
             # Öffnen des Browsers sowie den Seiten
-            self.driver = webdriver.Chrome(executable_path=chromedriver_path, options=options)
+            self._set_state("Öffne driver")
+            ### hier hängt er fest ###
+            self.driver = webdriver.Chrome(executable_path=chromedriver_path)#, options=opt
+            ###
+            self._set_state("Driver registriert")
             try:
                 self.driver.get(qis_url)
                 self._set_state("Öffne QIS URL")
@@ -115,6 +121,7 @@ class grades():
 
         except Exception as ex:
             self._set_state(":efs: "+ str(ex))
+            return
 
         self.continous_check()
 
@@ -204,7 +211,7 @@ class grades():
                 raise Exception("Duchschnitt stimmt nicht mit Tmp zusammen!")
             
             
-            #self.send_heartbeat()
+            self.send_heartbeat()
             # Tabelle wird geprintet    
             print(x)            
 
@@ -229,15 +236,15 @@ class grades():
             
     def sendmail(self, exam, note):
         self._set_state("! Sende Mail !")
-        #self.send_heartbeat()
-        user_credentials = {"email" : os.environ['NOTI_MAIL'], "password" : os.environ["NOTI_PASSWORD"]}
+        user_credentials = {"email" : "notirobi2@gmail.com", "password" : "xqpkfmgrjzplhqdf"}
         to_mail = ["florian.zasada@gmail.com", "florian.zasada@telekom.de", "Peter.Prumbach@telekom.de", "mail@peterprumbach.de", "fabian.lauret@telekom.de", "fabian@lauret-home.de", "georg.zibell@telekom.de", "georg.zibell@icloud.com"]
         subject = f"{exam} - NOTE IST RAUS!!!"
         msg = f"""
         Hi Leute,
 <br>ich bins, NotiRobi 2.0.
+<br>übrigens bin ich umgezogen...ich sitz mir jetzt mein Sitzstahl in einem Raspberry Pi wund ;D
 <br>
-<br>Auch dieses Semester sitze ich mit meiner Blechkiste auf dem Stuhl und überwache das Notengeschehen.
+<br>Auch dieses Semester überwache ich das Notengeschehen.
 <br>Wie ihr mich kennt, melde ich mich nur, wenn ich eine Änderung sehe.
 <br>
 <br>
@@ -267,5 +274,4 @@ class grades():
         
         
 if __name__ == '__main__':
-    main = grades()
-    main.main()
+    grades()
