@@ -2,8 +2,10 @@ from email import message
 from bs4 import BeautifulSoup
 
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
 
 import time
 import pytz
@@ -86,7 +88,7 @@ class grades():
             # Öffnen des Browsers sowie den Seiten
             self._set_state("Öffne driver")
             ### hier hängt er fest ###
-            self.driver = webdriver.Chrome(executable_path=chromedriver_path)#, options=opt
+            self.driver = webdriver.Chrome(executable_path=chromedriver_path, options=opt)
             ###
             self._set_state("Driver registriert")
             try:
@@ -99,9 +101,12 @@ class grades():
 
             # Anmeldung auf QIS
             try:
-                input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys("fzasada")
-                input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys("4ZRpz7CR")
-                weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
+                input_username = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="username"]'))).send_keys("fzasada")
+                # input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys("fzasada")
+                # input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys("4ZRpz7CR")
+                input_username = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="password"]'))).send_keys("4ZRpz7CR")
+                # weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
+                weiter_btn = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/div/div/div[2]/form/div/div[2]/input'))).click()
                 self._set_state("QIS Login")
             except:
                 self._set_state(":efs: Anmeldung fehlgeschlagen")
@@ -110,8 +115,11 @@ class grades():
 
             # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
             try:
-                leistung_btn = self.driver.find_element_by_xpath("""//*[@id="navi-main"]/li[3]/a""").click()
-                semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
+                # leistung_btn = self.driver.find_element_by_xpath("""//*[@id="navi-main"]/li[3]/a""").click()
+                leistung_btn = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="navi-main"]/li[3]/a'))).click()
+                self._set_state("QIS Login")
+                semester = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]'))).click()
+                # semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
             except:
                 self._set_state(":efs: Fehler bei Navigation in QIS")
                 raise Exception
