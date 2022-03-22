@@ -11,6 +11,7 @@ import time
 import pytz
 from prettytable import PrettyTable
 
+import subprocess
 import os
 
 from modules.mod_automail import automail
@@ -32,6 +33,9 @@ BOT_ID = "recfDz9mQYpPU99pu"
 class grades():
 
     def __init__(self):
+        #closing all Chrome sessions
+        os.system('pkill -o chromium')
+
         # Credentials JSON
         cred = credentials.Certificate('/home/pi/bin/check-my-grades/bot_creds.json')
         firebase_admin.initialize_app(cred)
@@ -82,7 +86,7 @@ class grades():
             opt.add_argument('--no-sandbox')
             opt.add_argument("--window-size=1920x1080")
 
-            chromedriver_path = "/usr/lib/chromium-browser/chromedriver"
+            chromedriver_path = '/usr/lib/chromium-browser/chromedriver'
             qis_url = "https://qisserver.htwk-leipzig.de/qisserver/rds?state=user&type=0"
 
             # Öffnen des Browsers sowie den Seiten

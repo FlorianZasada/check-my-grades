@@ -12,6 +12,10 @@ BOT_ID = "recfDz9mQYpPU99pu"
 
 class Forever():
     def __init__(self):
+        # Schließe vorherige Sessions
+        os.system('pkill -f forever')
+
+
         # Initialisiere Firebase 
         
         cred = credentials.Certificate('/home/pi/bin/check-my-grades/bot_creds.json')
