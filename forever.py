@@ -31,9 +31,8 @@ class Forever():
         self.doc_ref.update(data)
 
         # Leere History
-        automated_restarts_data = {"automated_restarts": "0"}
+        self._set_restarts(0)
         history_data = {"history":[]}
-        self.doc_ref.update(automated_restarts_data)
         self.doc_ref.update(history_data)
 
         self.counter = -1
@@ -50,6 +49,9 @@ class Forever():
                 self._set_restarts(self.counter)
                 self._set_history(now.strftime("%H:%M:%S"))
             p = Popen("python /home/pi/bin/check-my-grades/check_grades.py", shell=True)
+            
+            ### Fehler ###
+            self._set_error(now.strftime("%H:%M:%S"))
             clear()
             p.wait()
             sleep(10)
@@ -61,6 +63,9 @@ class Forever():
         data = {"automated_restarts": str(i)}
         doc_ref = self.db.collection(u'bots').document(u'check_grades')
         doc_ref.update(data)
+
+    def _set_error(self, time):
+        self.doc_ref.update({u'errors': firestore.ArrayUnion([time])})
 
 if __name__ == '__main__':
     Forever()
