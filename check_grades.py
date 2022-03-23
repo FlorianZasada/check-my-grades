@@ -2,6 +2,7 @@ from email import message
 from bs4 import BeautifulSoup
 
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -10,8 +11,6 @@ from selenium.common.exceptions import TimeoutException
 import time
 import pytz
 from prettytable import PrettyTable
-
-import subprocess
 import os
 
 from modules.mod_automail import automail
@@ -33,9 +32,6 @@ BOT_ID = "recfDz9mQYpPU99pu"
 class grades():
 
     def __init__(self):
-        #closing all Chrome sessions
-        os.system('pkill -o chromium')
-
         # Credentials JSON
         cred = credentials.Certificate('/home/pi/bin/check-my-grades/bot_creds.json')
         firebase_admin.initialize_app(cred)
@@ -80,62 +76,60 @@ class grades():
         self.send_heartbeat()
 
         try:
-            opt = webdriver.ChromeOptions()
-            opt.add_argument('--headless')
-            opt.add_argument('--disable-dev-shm-usage')
-            opt.add_argument('--no-sandbox')
-            opt.add_argument("--window-size=1920x1080")
+            # opt = webdriver.ChromeOptions()
+            # opt.add_argument('--headless')
+            # opt.add_argument('--no-sandbox')
+            # opt.add_argument('--start-maximized')
+            # opt.add_argument('--window-size=1920x1080')
+            # opt.add_argument('')
 
-            chromedriver_path = '/usr/lib/chromium-browser/chromedriver'
+            opt = Options()
+            opt.add_argument("headless")
+            opt.add_argument("disable-gpu")
+
+            chromedriver_path = r'/usr/lib/chromium-browser/chromedriver'
             qis_url = "https://qisserver.htwk-leipzig.de/qisserver/rds?state=user&type=0"
 
             # Öffnen des Browsers sowie den Seiten
             self._set_state("Öffne driver")
-            ### hier hängt er fest ###
-            self.driver = webdriver.Chrome(executable_path=chromedriver_path, options=opt)
-            ###
+            self.driver = webdriver.Chrome(options = opt, executable_path = chromedriver_path)
             self._set_state("Driver registriert")
+            
             try:
                 self.driver.get(qis_url)
                 self._set_state("Öffne QIS URL")
             except:
-                self._set_state(":efs: URL konnte nicht geöffnet werden")
-                raise Exception
+                raise Exception("URL konnte nicht geöffnet werden")
 
 
             # Anmeldung auf QIS
             try:
-                input_username = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="username"]'))).send_keys("fzasada")
-                # input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys("fzasada")
-                # input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys("4ZRpz7CR")
-                input_username = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="password"]'))).send_keys("4ZRpz7CR")
-                # weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
-                weiter_btn = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/div/div/div[2]/form/div/div[2]/input'))).click()
-                self._set_state("QIS Login")
+                #input_username = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="username"]'))).send_keys("fzasada")
+                input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys("fzasada")
+                input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys("4ZRpz7CR")
+                #input_username = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="password"]'))).send_keys("4ZRpz7CR")
+                weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
+                #weiter_btn = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/div/div/div[2]/form/div/div[2]/input'))).click()
+                self._set_state("In QIS eingeloggt")
             except:
-                self._set_state(":efs: Anmeldung fehlgeschlagen")
-                raise Exception
+                raise Exception("Anmeldung fehlgeschlagen")
             
 
             # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
             try:
-                # leistung_btn = self.driver.find_element_by_xpath("""//*[@id="navi-main"]/li[3]/a""").click()
-                leistung_btn = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="navi-main"]/li[3]/a'))).click()
-                self._set_state("QIS Login")
-                semester = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]'))).click()
-                # semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
+                leistung_btn = self.driver.find_element_by_xpath("""//*[@id="main"]/div/div[2]/div[1]/span/a""").click()
+                #leistung_btn = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="navi-main"]/li[3]/a'))).click()
+                self._set_state("Navigiere in das Semeseter")
+                #semester = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]'))).click()
+                semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
             except:
-                self._set_state(":efs: Fehler bei Navigation in QIS")
-                raise Exception
+                raise Exception("Fehler bei Navigation in QIS")
     
             # Funktionsaufruf (Keine Parameter notwendig (Dauerschleife in sich selbst))
-            now = datetime.now()
-
+            self.continous_check()
         except Exception as ex:
             self._set_state(":efs: "+ str(ex))
             return
-
-        self.continous_check()
 
 
         

@@ -9,12 +9,17 @@ from google.cloud import firestore
 from firebase_admin import firestore
 
 BOT_ID = "recfDz9mQYpPU99pu"
+COUNTER = -1
 
 class Forever():
     def __init__(self):
+        global COUNTER
         # Schließe vorherige Sessions
-        os.system('pkill -f forever')
-
+        try:
+            os.system('pkill -f check_grades')
+            os.system('p-kill -f chromium')
+        except:
+            pass
 
         # Initialisiere Firebase 
         
@@ -31,12 +36,10 @@ class Forever():
         self.doc_ref.update(data)
 
         # Leere History
-        automated_restarts_data = {"automated_restarts": "0"}
+        self._set_restarts(0)
         history_data = {"history":[]}
-        self.doc_ref.update(automated_restarts_data)
         self.doc_ref.update(history_data)
 
-        self.counter = -1
         clear = lambda: os.system('clear')
 
         while True:
@@ -45,9 +48,9 @@ class Forever():
             datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
             
             # Starte Check_grades
-            self.counter += 1
-            if self.counter != 0:
-                self._set_restarts(self.counter)
+            COUNTER += 1
+            if COUNTER != 0:
+                self._set_restarts(COUNTER)
                 self._set_history(now.strftime("%H:%M:%S"))
             p = Popen("python /home/pi/bin/check-my-grades/check_grades.py", shell=True)
             clear()
