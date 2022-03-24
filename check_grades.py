@@ -38,9 +38,10 @@ class grades():
         self.db = firestore.client()
 
         # Reset State
+        self.send_heartbeat()
         self._set_state("")
         self._set_state("Starte...")
-
+       
 
         # Konfiguriert aktuellen Timestamp
         tz = pytz.timezone('Europe/Berlin')

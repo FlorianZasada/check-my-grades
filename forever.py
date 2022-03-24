@@ -17,7 +17,7 @@ class Forever():
         # Schließe vorherige Sessions
         try:
             os.system('pkill -f check_grades')
-            os.system('p-kill -f chromium')
+            os.system('pkill -f chromium')
         except:
             pass
 
@@ -38,7 +38,10 @@ class Forever():
         # Leere History
         self._set_restarts(0)
         history_data = {"history":[]}
+        errors_data = {"errors": []}
+
         self.doc_ref.update(history_data)
+        self.doc_ref.update(errors_data) 
 
         clear = lambda: os.system('clear')
 
@@ -52,12 +55,16 @@ class Forever():
             if COUNTER != 0:
                 self._set_restarts(COUNTER)
                 self._set_history(now.strftime("%H:%M:%S"))
+                       
             p = Popen("python /home/pi/bin/check-my-grades/check_grades.py", shell=True)
+
             
-            ### Fehler ###
-            self._set_error(now.strftime("%H:%M:%S"))
             clear()
             p.wait()
+
+            # Fehler
+            now = datetime.datetime.now(tz)
+            self._set_error(now.strftime("%H:%M:%S"))
             sleep(10)
             
     def _set_history(self, datum):
