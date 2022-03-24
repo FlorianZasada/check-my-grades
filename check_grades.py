@@ -49,6 +49,8 @@ class grades():
         datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
         self._set_state("starte Story")
 
+        raise Exception("TEst")
+
         # Starte Story
         self.main()
 
