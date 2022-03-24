@@ -159,10 +159,6 @@ class grades():
             x = PrettyTable()
             x.field_names = ["Modul", "Note"]
 
-
-
-
-
             # Hier wird druch die Module iteriert
             counter = 1
             avg = 0

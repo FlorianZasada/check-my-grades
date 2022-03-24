@@ -58,14 +58,13 @@ class Forever():
                        
             p = Popen("python /home/pi/bin/check-my-grades/check_grades.py", shell=True)
 
-            
             clear()
             p.wait()
 
             # Fehler
             now = datetime.datetime.now(tz)
             self._set_error(now.strftime("%H:%M:%S"))
-            sleep(10)
+            sleep(15)
             
     def _set_history(self, datum):
         self.doc_ref.update({u'history': firestore.ArrayUnion([datum])})
@@ -76,7 +75,12 @@ class Forever():
         doc_ref.update(data)
 
     def _set_error(self, time):
-        self.doc_ref.update({u'errors': firestore.ArrayUnion([time])})
+        self.doc_ref.update({u'errors': firestore.ArrayUnion([{time: self._get_current_state()}])})
+
+    def _get_current_state(self):
+        state = self.doc_ref.get({u'state'})
+        state_val = state.get('state')
+        return state
 
 if __name__ == '__main__':
     Forever()
