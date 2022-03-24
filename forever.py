@@ -75,7 +75,7 @@ class Forever():
         doc_ref.update(data)
 
     def _set_error(self, time):
-        self.db.collection(u'bots').document(u'check_grades').set({"status": firestore.ArrayUnion([{time: self._get_current_state()}])})
+        self.db.collection(u'bots').document(u'check_grades').set({"status": firestore.ArrayUnion([{time: "FASLCH"}])})
         # self.doc_ref.update({u'errors': firestore.ArrayUnion([{time: self._get_current_state()}])})
 
     def _get_current_state(self):
