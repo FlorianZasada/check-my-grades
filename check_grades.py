@@ -47,9 +47,8 @@ class grades():
         tz = pytz.timezone('Europe/Berlin')
         now = datetime.now(tz)
         datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
+        raise Exception("TEST ESXPETION")
         self._set_state("starte Story")
-
-        raise Exception("TEst")
 
         # Starte Story
         self.main()
