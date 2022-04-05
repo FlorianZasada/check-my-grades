@@ -1,6 +1,6 @@
 from email import message
 from bs4 import BeautifulSoup
-
+import re
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -153,7 +153,7 @@ class grades():
 
             # Souper wird konfiguriert
             self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
-            root = self.soup.findAll("tr", {"class" : "MP"})
+            root = self.soup.findAll("tr", {"class" : ["MP", "PL"]})
 
 
             # Tabelle wird erstellt um eine schönere Dokumentation in der CMD zu ermöglichen
@@ -180,8 +180,11 @@ class grades():
 
                 try: 
                     for _ in range(5):
-                        grade = i.find("td", {"class" : 'grade collapsed'}).getText().strip()
-                        self._set_state("Grade: "+ grade)
+                        try:
+                            grade = i.find('td', {"class" : "grade collapsed"}).getText().strip()
+                            self._set_state("Grade: "+ grade)
+                        except:
+                            raise NoGradeFoundException("No Grade")
                         time.sleep(5)
                         if grade:
                             break
