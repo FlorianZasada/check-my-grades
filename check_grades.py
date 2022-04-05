@@ -179,13 +179,13 @@ class grades():
 
                 try: 
                     for _ in range(5):
-                        grade = i.find("td", {"class" : "grade"}).getText().strip()
+                        grade = i.find("td", {"class" : ['grade collapsed', 'grade']}).getText().strip()
                         self._set_state(grade)
                         if grade:
                             break
                         time.sleep(.5)
                     else:
-                        raise NoGradeFoundException ("No Grade")
+                        raise NoGradeFoundException("No Grade")
                 except NoGradeFoundException as ex:
                     raise ex
 
