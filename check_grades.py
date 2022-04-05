@@ -170,7 +170,6 @@ class grades():
                     for _ in range(5):
                         examName = i.find("span", {"class" : "examName"}).getText()
                         if examName:
-                            self._set_state(examName)
                             break
                         time.sleep(.5)
                     else:
@@ -182,6 +181,7 @@ class grades():
                     for _ in range(5):
                         grade = i.find("td", {"class" : "grade"}).getText()
                         if grade:
+                            self._set_state(grade)
                             break
                         time.sleep(.5)
                     else:
