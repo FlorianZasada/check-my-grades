@@ -181,9 +181,9 @@ class grades():
                 try: 
                     for _ in range(5):
                         if i.find('td', {"class" : "grade collapsed"}).getText().strip() != "":
-                            grade = i.find('td', {"class" : "grade collapsed"}).getText().strip() != ""
+                            grade = i.find('td', {"class" : "grade collapsed"}).getText().strip()
                         else:
-                            grade = i.find('td', {"class" : "grade"}).getText().strip() != ""
+                            grade = i.find('td', {"class" : "grade"}).getText().strip()
 
                         self._set_state("Grade: "+ grade)
                         time.sleep(5)
