@@ -223,9 +223,9 @@ class grades():
                 else:
                     continue
 
-            if str(avg) == "0" and os.stat("tmp.txt").st_size != 1:
-                self._set_state(":efs: Duchschnitt stimmt nicht mit Tmp zusammen!")
-                raise Exception("Duchschnitt stimmt nicht mit Tmp zusammen!")
+            # if str(avg) == "0" and os.stat("tmp.txt").st_size != 1:
+            #     self._set_state(":efs: Duchschnitt stimmt nicht mit Tmp zusammen!")
+            #     raise Exception("Duchschnitt stimmt nicht mit Tmp zusammen!")
             
             
             self.send_heartbeat()
