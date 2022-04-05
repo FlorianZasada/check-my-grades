@@ -141,7 +141,6 @@ class grades():
             Und ruft sich erneut auf.
 
         """
-        self._set_state("Starte Continous Check")
         try:
             # Sende Heartbeat
             self.send_heartbeat()
@@ -156,7 +155,6 @@ class grades():
             # Souper wird konfiguriert
             self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
             root = self.soup.findAll("tr", {"class" : ["MP"]})
-            self._set_state("Get all Data from page")
 
             # Tabelle wird erstellt um eine schönere Dokumentation in der CMD zu ermöglichen
             x = PrettyTable()
@@ -168,7 +166,7 @@ class grades():
             avg_mid = 0
             for i in root:
                 for _ in range(5):
-                    examName = i.find("span", {"class" : "examName"}).getText()
+                    examName = i.find("span", {"class" : "grade collapsed"}).getText()
                     if examName:
                         break
                     time.sleep(.5)
