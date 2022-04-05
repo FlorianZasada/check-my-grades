@@ -46,10 +46,6 @@ class grades():
         tz = pytz.timezone('Europe/Berlin')
         now = datetime.now(tz)
         datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
-<<<<<<< HEAD
-
-=======
->>>>>>> e9258c61e9413f784a7ca59b7feb5610cfd235ea
         self._set_state("starte Story")
 
         # Starte Story
