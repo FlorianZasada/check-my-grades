@@ -166,11 +166,11 @@ class grades():
             avg = 0
             avg_mid = 0
             for i in root:
-                self._set_state(i)
                 try:
                     for _ in range(5):
                         examName = i.find("span", {"class" : "examName"}).getText()
                         if examName:
+                            self._set_state(examName)
                             break
                         time.sleep(.5)
                     else:
