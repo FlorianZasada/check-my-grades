@@ -153,7 +153,7 @@ class grades():
 
             # Souper wird konfiguriert
             self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
-            root = self.soup.findAll("tr", {"class" : ["MP", "PL"]})
+            root = self.soup.findAll("tr", {"class" : "MP"})
 
 
             # Tabelle wird erstellt um eine schönere Dokumentation in der CMD zu ermöglichen
@@ -180,11 +180,9 @@ class grades():
 
                 try: 
                     for _ in range(5):
-                        try:
-                            grade = i.find('td', {"class" : "grade.collapsed"}).getText().strip()
-                            self._set_state("Grade: "+ grade)
-                        except:
-                            raise NoGradeFoundException("No Grade")
+                        self._set_state(i)
+                        grade = i.find('td', {"class" : re.compile(r'(grade collapsed|grade)')}).getText().strip()
+                        self._set_state("Grade: "+ grade)
                         time.sleep(5)
                         if grade:
                             break
