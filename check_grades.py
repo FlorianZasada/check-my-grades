@@ -169,9 +169,9 @@ class grades():
             i_count = 0
             for i in root:
                 i_count+= 1
-                if i_count == 2:
-                    self._set_state(i)
-                    sys.exit()
+                # if i_count == 2:
+                #     self._set_state(i)
+                #     sys.exit()
                 try:
                     for _ in range(5):
                         examName = i.find("span", {"class" : "examName"}).getText()
