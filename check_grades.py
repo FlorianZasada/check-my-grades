@@ -165,18 +165,11 @@ class grades():
             counter = 1
             avg = 0
             avg_mid = 0
-
-            i_count = 0
             for i in root:
                 i_count+= 1
-                # if i_count == 2:
-                #     self._set_state(i)
-                #     sys.exit()
                 try:
                     for _ in range(5):
                         examName = i.find("span", {"class" : "examName"}).getText()
-                        self._set_state("Exam: "+ examName)
-                        time.sleep(1)
                         if examName:
                             break
                         time.sleep(.5)
@@ -191,9 +184,9 @@ class grades():
                             grade = i.find('td', {"class" : "grade collapsed"}).getText().strip()
                         except:
                             grade = i.find('td', {"class" : "grade"}).getText().strip()
-
-                        self._set_state("Grade: "+ grade)
-                        time.sleep(1)
+                        
+                        if grade == "5":
+                            grade = "0"
                         if grade:
                             break
                         time.sleep(.5)
