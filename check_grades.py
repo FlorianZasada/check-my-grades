@@ -179,8 +179,6 @@ class grades():
                 try: 
                     for _ in range(5):
                         grade = i.find("td", {"class" : "grade collapsed"}).getText().strip()
-                        self._set_state(grade)
-                        sys.exit()
                         if grade:
                             break
                         time.sleep(.5)
