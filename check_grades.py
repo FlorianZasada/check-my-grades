@@ -169,6 +169,7 @@ class grades():
                     for _ in range(5):
                         examName = i.find("span", {"class" : "examName"}).getText()
                         self._set_state("Exam: "+ examName)
+                        time.sleep(5)
                         if examName:
                             break
                         time.sleep(.5)
