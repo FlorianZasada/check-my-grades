@@ -119,17 +119,18 @@ class grades():
 
             # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
             try:
-                leistung_btn = self.driver.find_element_by_xpath("""//*[@id="main"]/div/div[2]/div[1]/span/a""").click()
+                leistung_btn = self.driver.find_element_by_xpath("""*[text()='Leistungsübersicht']""").click()
                 #leistung_btn = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="navi-main"]/li[3]/a'))).click()
                 self._set_state("Navigiere in das Semeseter")
                 #semester = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]'))).click()
-                semester = self.driver.find_element_by_xpath("""//*[@id="content"]/form/ul/li/ul/li/ul/li[2]/a[1]""").click()
+                semester = self.driver.find_element_by_xpath("""*[text()='Wintersemester 2021/22']""").click()
             except:
                 raise Exception("Fehler bei Navigation in QIS")
     
             # Funktionsaufruf (Keine Parameter notwendig (Dauerschleife in sich selbst))
             self.continous_check()
         except Exception as ex:
+            self.driver.close()
             self._set_state(":efs: "+ str(ex))
             return
 
@@ -232,6 +233,7 @@ class grades():
             time.sleep(3)
             
         except Exception as ex:
+            self.driver.close()
             self._set_state(":efs: " + str(ex))
             return
 
