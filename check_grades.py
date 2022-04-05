@@ -6,7 +6,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
 
 import time
 import pytz
@@ -120,9 +119,9 @@ class grades():
             # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
             try:
                 # leistung_btn = self.driver.find_element_by_xpath("//a[contains(text(), 'Leistungsübersicht')]").click()
-                leistung_btn = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[contains(text(), 'Leistungsübersicht')]"))).click()
+                leistung_btn = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.LINK_TEXT, "Leistungsübersicht"))).click()
                 self._set_state("Navigiere in das Semeseter")
-                semester = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, "//a[contains(text(), 'Wintersemester 2021/22')]"))).click()
+                semester = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Wintersemester 2021/22"))).click()
                 #semester = self.driver.find_element_by_xpath("//a[contains(text(), 'Wintersemester 2021/22')]").click()
             except:
                 raise Exception("Fehler bei Navigation in QIS")
