@@ -11,7 +11,7 @@ import time
 import pytz
 from prettytable import PrettyTable
 import os
-
+import sys
 from modules.mod_automail import automail
 from modules.mod_loading_bar import loading_bar
 from boto.s3.connection import S3Connection
@@ -46,7 +46,10 @@ class grades():
         tz = pytz.timezone('Europe/Berlin')
         now = datetime.now(tz)
         datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
+<<<<<<< HEAD
 
+=======
+>>>>>>> e9258c61e9413f784a7ca59b7feb5610cfd235ea
         self._set_state("starte Story")
 
         # Starte Story
@@ -178,10 +181,11 @@ class grades():
                     raise ex
 
                 try: 
+                    self._set_state(i)
+                    sys.exit()
                     for _ in range(5):
                         grade = i.find("td", {"class" : "grade"}).getText()
                         if grade:
-                            self._set_state(grade)
                             break
                         time.sleep(.5)
                     else:
