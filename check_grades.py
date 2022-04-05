@@ -154,7 +154,8 @@ class grades():
 
             # Souper wird konfiguriert
             self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
-            root = self.soup.findAll("tr", {"class" : ["MP"]})
+            root = self.soup.findAll("tr", {"class" : "MP"})
+
 
             # Tabelle wird erstellt um eine schönere Dokumentation in der CMD zu ermöglichen
             x = PrettyTable()
@@ -166,12 +167,12 @@ class grades():
             avg_mid = 0
             for i in root:
                 for _ in range(5):
-                    examName = i.find("span", {"class" : "grade collapsed"}).getText()
+                    examName = i.find("span", {"class" : "examName"}).getText()
                     if examName:
                         break
                     time.sleep(.5)
                 else:
-                    raise NoModuleFoundException
+                    raise NoModuleFoundException("No Module")
 
                 for _ in range(5):
                     grade = i.find("td", {"class" : "grade collapsed"}).getText()
@@ -179,7 +180,7 @@ class grades():
                         break
                     time.sleep(.5)
                 else:
-                    raise NoGradeFoundException
+                    raise NoGradeFoundException ("No Grade")
 
 
                 # Hinzufügen zur Tabelle
