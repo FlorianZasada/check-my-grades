@@ -1,4 +1,5 @@
 from email import message
+from typing import final
 from bs4 import BeautifulSoup
 import re
 from selenium import webdriver
@@ -186,10 +187,12 @@ class grades():
 
                 try: 
                     for _ in range(5):
-                        if i.find('td', {"class" : "grade collapsed"}).getText().strip() != "":
+                        try:
                             grade = i.find('td', {"class" : "grade collapsed"}).getText().strip()
-                        else:
+                        except:
                             grade = i.find('td', {"class" : "grade"}).getText().strip()
+                        finally:
+                            raise NoGradeFoundException
 
                         self._set_state("Grade: "+ grade)
                         time.sleep(1)
