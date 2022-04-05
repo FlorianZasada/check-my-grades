@@ -177,10 +177,10 @@ class grades():
                     raise ex
 
                 try: 
-                    self._set_state(i)
-                    sys.exit()
                     for _ in range(5):
-                        grade = i.find("td", {"class" : "grade"}).getText()
+                        grade = i.find("td", {"class" : "grade collapsed"}).getText()
+                        self._set_state(grade)
+                        sys.exit()
                         if grade:
                             break
                         time.sleep(.5)
