@@ -180,8 +180,12 @@ class grades():
 
                 try: 
                     for _ in range(5):
-                        grade = i.find('td', {"class" : re.compile("(grade (collapsed)?)")}).getText().strip()
-                        self._set_state("Grade: "+ grade)
+                        if i.find('td', {"class" : "grade collapsed"}).getText().strip() != "":
+                            grade = i.find('td', {"class" : re.compile("(grade (collapsed)?)")}).getText().strip() != ""
+                        else:
+                            grade = i.find('td', {"class" : re.compile("grade")}).getText().strip() != ""
+
+                        self._set_state("Grade: "+ re.compile("(grade (collapsed)?)"))
                         time.sleep(5)
                         if grade:
                             break
