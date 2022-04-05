@@ -181,6 +181,7 @@ class grades():
                     for _ in range(5):
                         grade = i.find("td", {"class" : 'grade collapsed'}).getText().strip()
                         self._set_state("Grade: "+ grade)
+                        time.sleep(5)
                         if grade:
                             break
                         time.sleep(.5)
