@@ -179,7 +179,7 @@ class grades():
 
                 try: 
                     for _ in range(5):
-                        grade = i.find("td", {"class" : "grade collapsed"}).getText().strip()
+                        grade = i.find("td", {"class" : "grade"}).getText().strip()
                         self._set_state(grade)
                         if grade:
                             break
