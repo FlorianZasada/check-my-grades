@@ -166,7 +166,6 @@ class grades():
             avg = 0
             avg_mid = 0
             for i in root:
-                i_count+= 1
                 try:
                     for _ in range(5):
                         examName = i.find("span", {"class" : "examName"}).getText()
