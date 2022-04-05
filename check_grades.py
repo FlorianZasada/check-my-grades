@@ -167,7 +167,8 @@ class grades():
 
             i_count = 0
             for i in root:
-                if i_count == 1:
+                i_count+= 1
+                if i_count == 2:
                     self._set_state(i)
                     sys.exit()
                 try:
@@ -230,7 +231,6 @@ class grades():
                         continue
                 else:
                     continue
-                i_count+= 1
             
             self.send_heartbeat()
             # Tabelle wird geprintet    
