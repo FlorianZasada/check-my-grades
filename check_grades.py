@@ -165,8 +165,8 @@ class grades():
             counter = 1
             avg = 0
             avg_mid = 0
-            self._set_state("Starte Loop")
             for i in root:
+                self._set_state(i)
                 try:
                     for _ in range(5):
                         examName = i.find("span", {"class" : "examName"}).getText()
