@@ -94,7 +94,7 @@ class grades():
             self._set_state("Öffne driver")
             self.driver = webdriver.Chrome(options = opt, executable_path = chromedriver_path)
             self._set_state("Driver registriert")
-            
+
             try:
                 self.driver.get(qis_url)
                 self._set_state("Öffne QIS URL")
