@@ -141,6 +141,7 @@ class grades():
             Und ruft sich erneut auf.
 
         """
+        self._set_state("Starte Continous Check")
         try:
             # Sende Heartbeat
             self.send_heartbeat()
@@ -150,6 +151,7 @@ class grades():
 
             clear = lambda: print("\033c")
             clear()
+
 
             # Souper wird konfiguriert
             self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
