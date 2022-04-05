@@ -164,12 +164,17 @@ class grades():
             counter = 1
             avg = 0
             avg_mid = 0
+
+            i_count = 0
             for i in root:
+                if i_count == 1:
+                    self._set_state(i)
+                    sys.exit()
                 try:
                     for _ in range(5):
                         examName = i.find("span", {"class" : "examName"}).getText()
                         self._set_state("Exam: "+ examName)
-                        time.sleep(5)
+                        time.sleep(1)
                         if examName:
                             break
                         time.sleep(.5)
@@ -186,7 +191,7 @@ class grades():
                             grade = i.find('td', {"class" : "grade"}).getText().strip()
 
                         self._set_state("Grade: "+ grade)
-                        time.sleep(5)
+                        time.sleep(1)
                         if grade:
                             break
                         time.sleep(.5)
@@ -225,6 +230,7 @@ class grades():
                         continue
                 else:
                     continue
+                i_count+= 1
             
             self.send_heartbeat()
             # Tabelle wird geprintet    
