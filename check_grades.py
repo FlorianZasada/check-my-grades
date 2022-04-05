@@ -165,6 +165,7 @@ class grades():
             counter = 1
             avg = 0
             avg_mid = 0
+            self._set_state("Starte Loop")
             for i in root:
                 try:
                     for _ in range(5):
@@ -174,7 +175,7 @@ class grades():
                         time.sleep(.5)
                     else:
                         raise NoModuleFoundException("No Module")
-                except Exception as ex:
+                except NoModuleFoundException as ex:
                     raise ex
 
                 try: 
@@ -185,7 +186,7 @@ class grades():
                         time.sleep(.5)
                     else:
                         raise NoGradeFoundException ("No Grade")
-                except Exception as ex:
+                except NoGradeFoundException as ex:
                     raise ex
 
 
