@@ -181,7 +181,7 @@ class grades():
                 try: 
                     for _ in range(5):
                         self._set_state(i)
-                        grade = i.find_all('td', {"class" : re.compile(r'(grade collapsed|grade)')}).getText().strip()
+                        grade = i.find_all('td', {"class" : "grade collapsed"}).getText().strip()
                         self._set_state("Grade: "+ grade)
                         time.sleep(5)
                         if grade:
@@ -222,11 +222,6 @@ class grades():
                         continue
                 else:
                     continue
-
-            # if str(avg) == "0" and os.stat("tmp.txt").st_size != 1:
-            #     self._set_state(":efs: Duchschnitt stimmt nicht mit Tmp zusammen!")
-            #     raise Exception("Duchschnitt stimmt nicht mit Tmp zusammen!")
-            
             
             self.send_heartbeat()
             # Tabelle wird geprintet    
