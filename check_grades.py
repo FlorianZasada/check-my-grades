@@ -166,21 +166,27 @@ class grades():
             avg = 0
             avg_mid = 0
             for i in root:
-                for _ in range(5):
-                    examName = i.find("span", {"class" : "examName"}).getText()
-                    if examName:
-                        break
-                    time.sleep(.5)
-                else:
-                    raise NoModuleFoundException("No Module")
+                try:
+                    for _ in range(5):
+                        examName = i.find("span", {"class" : "examName"}).getText()
+                        if examName:
+                            break
+                        time.sleep(.5)
+                    else:
+                        raise NoModuleFoundException("No Module")
+                except Exception as ex:
+                    raise ex
 
-                for _ in range(5):
-                    grade = i.find("td", {"class" : "grade collapsed"}).getText()
-                    if grade:
-                        break
-                    time.sleep(.5)
-                else:
-                    raise NoGradeFoundException ("No Grade")
+                try: 
+                    for _ in range(5):
+                        grade = i.find("td", {"class" : "grade"}).getText()
+                        if grade:
+                            break
+                        time.sleep(.5)
+                    else:
+                        raise NoGradeFoundException ("No Grade")
+                except Exception as ex:
+                    raise ex
 
 
                 # Hinzufügen zur Tabelle
