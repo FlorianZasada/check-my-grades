@@ -47,7 +47,7 @@ class grades():
         tz = pytz.timezone('Europe/Berlin')
         now = datetime.now(tz)
         datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
-        raise Exception("TEST ESXPETION")
+
         self._set_state("starte Story")
 
         # Starte Story
@@ -96,7 +96,7 @@ class grades():
             self._set_state("Öffne driver")
             self.driver = webdriver.Chrome(options = opt, executable_path = chromedriver_path)
             self._set_state("Driver registriert")
-            
+
             try:
                 self.driver.get(qis_url)
                 self._set_state("Öffne QIS URL")
