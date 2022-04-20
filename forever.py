@@ -14,10 +14,16 @@ COUNTER = -1
 class Forever():
     def __init__(self):
         global COUNTER
+
+        if os.environ.get('https_proxy'):
+            del os.environ['https_proxy']
+        if os.environ.get('http_proxy'):
+            del os.environ['http_proxy']
+
         # Schließe vorherige Sessions
+
         try:
             os.system('pkill -f check_grades')
-            os.system('pkill -f chromium')
         except:
             pass
 
