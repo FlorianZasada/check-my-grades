@@ -47,7 +47,9 @@ class Forever():
         errors_data = {"errors": []}
 
         self.doc_ref.update(history_data)
-        self.doc_ref.update(errors_data) 
+        self.doc_ref.update(errors_data)
+
+        self._set_runtime()
 
         clear = lambda: os.system('clear')
 
@@ -70,7 +72,13 @@ class Forever():
             # Fehler
             now = datetime.datetime.now(tz)
             self._set_error(now.strftime("%H:%M:%S"))
+            self._set_runtime(runtime="Inaktiv")
             sleep(15)
+
+    def _set_runtime(self, runtime="Aktiv"):
+        data = {"runtime": runtime}
+        doc_ref = self.db.collection(u'bots').document(u'check_grades')
+        doc_ref.update(data)
             
     def _set_history(self, datum):
         self.doc_ref.update({u'history': firestore.ArrayUnion([datum])})
