@@ -58,7 +58,7 @@ class grades():
         now = datetime.now(tz)
         datestring =  now.strftime("%d.%m.%Y, %H:%M:%S") 
         
-        data = {"last_state" : datestring}
+        data = {"last_state" : datestring, "runtime": "Aktiv"}
         doc_ref = self.db.collection(u'bots').document(u'check_grades')
         doc_ref.update(data)
         
