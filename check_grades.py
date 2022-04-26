@@ -251,7 +251,7 @@ class grades():
             
     def sendmail(self, exam, note):
         self._set_state("! Sende Mail !")
-        user_credentials = {"email" : "notirobi2@gmail.com", "password" : "xqpkfmgrjzplhqdf"}
+        user_credentials = {"email" : "robot@florianzasada.com", "password" : r"%Flomaluju15"}
         to_mail = ["florian.zasada@gmail.com", "florian.zasada@telekom.de", "Peter.Prumbach@telekom.de", "mail@peterprumbach.de", "fabian.lauret@telekom.de", "fabian@lauret-home.de", "georg.zibell@telekom.de", "georg.zibell@icloud.com"]
         subject = f"{exam} - NOTE IST RAUS!!!"
         msg = f"""

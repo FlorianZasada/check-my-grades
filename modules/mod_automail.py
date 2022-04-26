@@ -49,4 +49,4 @@ class automail():
             server.quit()
 
 if __name__ == '__main__':
-    automail({"email": "notirobi2@gmail.com", "password": "Zakopane2403"}, "florian.zasada@gmail.com", "New", "<h1>HIIII</h1>")
+    automail({"email": "robot@florianzasada.com", "password": r"%Flomaluju15"}, "florian.zasada@gmail.com", "New", "<h1>HIIII</h1>")
