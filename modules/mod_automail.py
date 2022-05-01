@@ -36,11 +36,15 @@ class automail():
             part = MIMEText(self.msgraw, 'html')
             msg.attach(part)
 
-            server = smtplib.SMTP('smtp.gmail.com:587')
+            server = smtplib.SMTP('smtp.titan.email:587')
             server.ehlo()
             server.starttls()
             # server.ehlo()
-            server.login(self.user_cred.get("email"), self.user_cred.get("password"))
+            try:
+                server.login(self.user_cred.get("email"), self.user_cred.get("password"))
+            except:
+                print("Error Loggin into Email Server")
+                return
             try:
                 server.sendmail(self.user_cred.get("email"), self.to, msg.as_string())
                 print ('email sent')
@@ -49,4 +53,4 @@ class automail():
             server.quit()
 
 if __name__ == '__main__':
-    automail({"email": "robot@florianzasada.com", "password": r"%Flomaluju15"}, "florian.zasada@gmail.com", "New", "<h1>HIIII</h1>")
+    automail({"email": "notirobi@florianzasada.com", "password": r"%Flomaluju15"}, "florian.zasada@gmail.com", "New", "<h1>HIIII</h1>")
