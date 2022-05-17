@@ -123,8 +123,8 @@ class grades():
                 self._set_state("Navigiere in das Semeseter")
                 semester = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Wintersemester 2021/22"))).click()
                 #semester = self.driver.find_element_by_xpath("//a[contains(text(), 'Wintersemester 2021/22')]").click()
-            except:
-                raise Exception("Fehler bei Navigation in QIS")
+            except Exception as ex:
+                raise Exception(ex, "Fehler bei Navigation in QIS")
     
             # Funktionsaufruf (Keine Parameter notwendig (Dauerschleife in sich selbst))
             self.continous_check()
