@@ -52,7 +52,6 @@ class grades():
         datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
         self._set_state("starte Story")
 
-        self._init_cache()
 
         # Starte Story
         self.main()
@@ -73,11 +72,6 @@ class grades():
         doc_ref = self.db.collection(u'bots').document(u'check_grades')
         doc_ref.update(data)
 
-    def _init_cache(self):
-        # Check the folder
-        if not os.path.isfile(config["cache_file"]):
-            with open(config["cache_file"], 'w') as f:
-                f.write('Create a new text file!')
         
     def _set_log(self, message):
         data = {"log" : message}
