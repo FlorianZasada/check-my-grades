@@ -16,6 +16,7 @@ import os
 import sys
 from modules.mod_automail import automail
 from modules.mod_loading_bar import loading_bar
+from modules.mod_logging import logging
 from boto.s3.connection import S3Connection
 from datetime import datetime, timedelta
 
@@ -71,7 +72,6 @@ class grades():
         data = {"status" : message}
         doc_ref = self.db.collection(u'bots').document(u'check_grades')
         doc_ref.update(data)
-
         
     def _set_log(self, message):
         data = {"log" : message}
@@ -90,7 +90,6 @@ class grades():
             opt = Options()
             opt.add_argument("headless")
             opt.add_argument("disable-gpu")
-
 
 
             # Öffnen des Browsers sowie den Seiten
@@ -248,6 +247,7 @@ class grades():
         except Exception as ex:
             self.driver.close()
             self._set_state(":efs: " + str(ex))
+            logging.write_log("error", str(ex))
             return
 
 
