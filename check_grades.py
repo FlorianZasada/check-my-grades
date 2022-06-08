@@ -235,7 +235,7 @@ class grades():
             
             # Warte 30 Sekunden
             self._set_state("Warte 30 Sekunden...")
-            self._set_log(x)
+            self._set_log(x.get_string())
             print("\nWarte 30 Sekunden...") 
             loading_bar(50, 0.5)
             clear()
