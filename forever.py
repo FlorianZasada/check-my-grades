@@ -1,3 +1,4 @@
+from cmath import log
 from subprocess import Popen
 import datetime
 import os
@@ -7,6 +8,8 @@ import firebase_admin
 from firebase_admin import credentials
 from google.cloud import firestore
 from firebase_admin import firestore
+
+from modules.mod_logging import logging
 
 BOT_ID = "recfDz9mQYpPU99pu"
 COUNTER = -1
@@ -70,6 +73,9 @@ class Forever():
             p.wait()
 
             # Fehler
+
+            logging.write_log("error", "Neustart Nummer %d" %(COUNTER))
+
             now = datetime.datetime.now(tz)
             self._set_error(now.strftime("%H:%M:%S"))
             self._set_runtime(runtime="Inaktiv")

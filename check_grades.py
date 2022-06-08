@@ -1,5 +1,6 @@
 from email import message
 from typing import final
+from boto import config
 from bs4 import BeautifulSoup
 import re
 from selenium import webdriver
@@ -25,6 +26,8 @@ from firebase_admin import credentials
 from google.cloud import firestore
 from firebase_admin import firestore
 
+import _localconfig
+
 
 BOT_ID = "recfDz9mQYpPU99pu"
 
@@ -49,6 +52,8 @@ class grades():
         datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
         self._set_state("starte Story")
 
+        self._init_cache()
+
         # Starte Story
         self.main()
 
@@ -68,7 +73,17 @@ class grades():
         doc_ref = self.db.collection(u'bots').document(u'check_grades')
         doc_ref.update(data)
 
-    
+    def _init_cache(self):
+        # Check the folder
+        if not os.path.isfile(config["cache_file"]):
+            with open(config["cache_file"], 'w') as f:
+                f.write('Create a new text file!')
+        
+    def _set_log(self, message):
+        data = {"log" : message}
+        doc_ref = self.db.collection(u'bots').document(u'check_grades')
+        doc_ref.update(data)
+
     def main(self):
         """
             Es wird auf die chromedriver.exe zugegriffen. Diese muss zwingend im Root Ordner liegen.
@@ -76,28 +91,21 @@ class grades():
         """
         self.send_heartbeat()
 
-        try:
-            # opt = webdriver.ChromeOptions()
-            # opt.add_argument('--headless')
-            # opt.add_argument('--no-sandbox')
-            # opt.add_argument('--start-maximized')
-            # opt.add_argument('--window-size=1920x1080')
-            # opt.add_argument('')
 
+        try:
             opt = Options()
             opt.add_argument("headless")
             opt.add_argument("disable-gpu")
 
-            chromedriver_path = r'/usr/lib/chromium-browser/chromedriver'
-            qis_url = "https://qisserver.htwk-leipzig.de/qisserver/rds?state=user&type=0"
+
 
             # Öffnen des Browsers sowie den Seiten
             self._set_state("Öffne driver")
-            self.driver = webdriver.Chrome(options = opt, executable_path = chromedriver_path)
+            self.driver = webdriver.Chrome(options = opt, executable_path = config["chromedriver_path"])
             self._set_state("Driver registriert")
 
             try:
-                self.driver.get(qis_url)
+                self.driver.get(config["qis_url"])
                 self._set_state("Öffne QIS URL")
             except:
                 raise Exception("URL konnte nicht geöffnet werden")
@@ -106,8 +114,8 @@ class grades():
             # Anmeldung auf QIS
             try:
                 #input_username = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="username"]'))).send_keys("fzasada")
-                input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys("fzasada")
-                input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys("4ZRpz7CR")
+                input_username = self.driver.find_element_by_xpath("""//*[@id="username"]""").send_keys(config["qis_uname"])
+                input_pw = self.driver.find_element_by_xpath("""//*[@id="password"]""").send_keys(config["qis_pword"])
                 #input_username = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="password"]'))).send_keys("4ZRpz7CR")
                 weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
                 #weiter_btn = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/div/div/div[2]/form/div/div[2]/input'))).click()
@@ -121,7 +129,6 @@ class grades():
                 # leistung_btn = self.driver.find_element_by_xpath("//a[contains(text(), 'Leistungsübersicht')]").click()
                 leistung_btn = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, """//*[@id="main"]/div/div[2]/div[2]/a"""))).click()
                 self._set_state("Navigiere in das Semeseter")
-                print("Suche Semester")
                 semester = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Wintersemester 2021/22"))).click()
                 #semester = self.driver.find_element_by_xpath("//a[contains(text(), 'Wintersemester 2021/22')]").click()
             except Exception as ex:
@@ -235,6 +242,7 @@ class grades():
             
             # Warte 30 Sekunden
             self._set_state("Warte 30 Sekunden...")
+            self._set_log(x)
             print("\nWarte 30 Sekunden...") 
             loading_bar(50, 0.5)
             clear()
