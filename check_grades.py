@@ -27,7 +27,7 @@ from firebase_admin import credentials
 from google.cloud import firestore
 from firebase_admin import firestore
 
-import _localconfig
+from _localconfig import config
 
 
 BOT_ID = "recfDz9mQYpPU99pu"
