@@ -26,6 +26,10 @@ import firebase_admin
 from firebase_admin import credentials
 from google.cloud import firestore
 from firebase_admin import firestore
+from firebase_admin import storage
+
+# Import UUID4 to create token
+from uuid import uuid4
 
 from _localconfig import config
 
@@ -40,6 +44,26 @@ class grades():
         cred = credentials.Certificate('/home/pi/bin/check-my-grades/bot_creds.json')
         firebase_admin.initialize_app(cred)
         self.db = firestore.client()
+
+        # Storage Init
+        default_app = firebase_admin.initialize_app(cred, {
+            'storageBucket': 'gs://robat-1c1a8.appspot.com'
+        })
+        
+        bucket = storage.bucket()
+        blob = bucket.blob("FZ001")
+
+        # Create new token
+        new_token = uuid4()
+
+        # Create new dictionary with the metadata
+        metadata  = {"firebaseStorageDownloadTokens": new_token}
+
+        # Set metadata to blob
+        blob.metadata = metadata
+
+        # Upload file
+        blob.upload_from_filename(filename="FZ001", content_type='.txt')
 
         # Reset State
         self.send_heartbeat()
