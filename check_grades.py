@@ -53,16 +53,7 @@ class grades():
         bucket = storage.bucket()
         blob = bucket.blob("FZ001.log")
 
-        # Create new token
-        new_token = uuid4()
-
-        # Create new dictionary with the metadata
-        metadata  = {"firebaseStorageDownloadTokens": new_token}
-
         outfile=r'./bin/check-my-grades/_log/log.txt'
-
-        # Set metadata to blob
-        blob.metadata = metadata
 
         with open(outfile, 'rb') as my_file:
             blob.upload_from_file(my_file)
