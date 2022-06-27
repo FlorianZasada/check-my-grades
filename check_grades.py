@@ -110,7 +110,6 @@ class grades():
                 
             except:
                 raise Exception("URL konnte nicht geöffnet werden")
-            time.sleep(10)
 
             # Anmeldung auf QIS
             try:
@@ -131,8 +130,8 @@ class grades():
                 self._set_state("Navigiere in das Semeseter")
                 print("Navigiere in das Semeseter")
                 # leistung_btn = self.driver.find_element_by_xpath("""//a[contains(text(), 'Leistungsübersicht')]""").click()
-                leistung_btn = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, """//*[@id="navi-main"]/li[3]/a"""))).click()
-                semester = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Wintersemester 2021/22"))).click()
+                leistung_btn = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, """//*[@id="navi-main"]/li[3]/a"""))).click()
+                semester = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Wintersemester 2021/22"))).click()
                 #semester = self.driver.find_element_by_xpath("//a[contains(text(), 'Wintersemester 2021/22')]").click()
             except Exception as ex:
                 print(ex)
