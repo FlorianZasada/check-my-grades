@@ -110,7 +110,7 @@ class grades():
                 
             except:
                 raise Exception("URL konnte nicht geöffnet werden")
-
+            time.sleep(10)
 
             # Anmeldung auf QIS
             try:
