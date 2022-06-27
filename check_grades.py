@@ -93,8 +93,8 @@ class grades():
         try:
             opt = Options()
             opt.add_argument("--start-maximized")
-            #opt.add_argument("headless")
-            #opt.add_argument("disable-gpu")
+            opt.add_argument("headless")
+            opt.add_argument("disable-gpu")
 
 
             # Öffnen des Browsers sowie den Seiten
