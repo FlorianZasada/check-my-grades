@@ -123,7 +123,8 @@ class grades():
 
             # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
             try:
-                leistung_btn = self.driver.find_element_by_xpath("""//a[contains(text(), 'Leistungsübersicht')]""").click()
+                # leistung_btn = self.driver.find_element_by_xpath("""//a[contains(text(), 'Leistungsübersicht')]""").click()
+                self.driver.get("https://qisserver.htwk-leipzig.de/qisserver/rds?state=notenspiegelStudent&next=tree.vm&nextdir=qispos/notenspiegel/student&navigationPosition=functions%2CnotenspiegelStudent&breadcrumb=notenspiegel&topitem=functions&subitem=notenspiegelStudent&asi=2xZ.YAqEpykJVOSz$ZjX")
                 # leistung_btn = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, """//*@id="navi-main"]/li[3]/a"""))).click()
                 self._set_state("Navigiere in das Semeseter")
                 semester = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Wintersemester 2021/22"))).click()
