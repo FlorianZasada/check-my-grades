@@ -99,12 +99,15 @@ class grades():
 
             # Öffnen des Browsers sowie den Seiten
             self._set_state("Öffne driver")
+            print("Öffne driver")
             self.driver = webdriver.Chrome(options = opt, executable_path = config["chromedriver_path"])
             self._set_state("Driver registriert")
 
             try:
-                self.driver.get(config["qis_url"])
+                print("Öffne driver")
                 self._set_state("Öffne QIS URL")
+                self.driver.get(config["qis_url"])
+                
             except:
                 raise Exception("URL konnte nicht geöffnet werden")
 
@@ -118,6 +121,7 @@ class grades():
                 weiter_btn = self.driver.find_element_by_xpath("""//*[@id="content"]/div/div/div[2]/form/div/div[2]/input""").click()
                 #weiter_btn = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/div/div/div[2]/form/div/div[2]/input'))).click()
                 self._set_state("In QIS eingeloggt")
+                print("In QIS eingeloggt")
             except:
                 raise Exception("Anmeldung fehlgeschlagen")
             
@@ -125,6 +129,7 @@ class grades():
             # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
             try:
                 self._set_state("Navigiere in das Semeseter")
+                print("Navigiere in das Semeseter")
                 # leistung_btn = self.driver.find_element_by_xpath("""//a[contains(text(), 'Leistungsübersicht')]""").click()
                 leistung_btn = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, """//*[@id="navi-main"]/li[3]/a"""))).click()
                 semester = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Wintersemester 2021/22"))).click()
