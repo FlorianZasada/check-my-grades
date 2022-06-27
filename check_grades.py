@@ -137,7 +137,7 @@ class grades():
             # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
             try:
                 # leistung_btn = self.driver.find_element_by_xpath("//a[contains(text(), 'Leistungsübersicht')]").click()
-                leistung_btn = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, """//*[@id="main"]/div/div[2]/div[2]/a"""))).click()
+                leistung_btn = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, """//*[@id="navi-main"]/li[3]/a"""))).click()
                 self._set_state("Navigiere in das Semeseter")
                 semester = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Wintersemester 2021/22"))).click()
                 #semester = self.driver.find_element_by_xpath("//a[contains(text(), 'Wintersemester 2021/22')]").click()
