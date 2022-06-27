@@ -123,12 +123,11 @@ class grades():
 
             # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
             try:
-                # leistung_btn = self.driver.find_element_by_xpath("""//a[contains(text(), 'Leistungsübersicht')]""").click()
-                # leistung_btn = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, """//*@id="navi-main"]/li[3]/a"""))).click()
                 self._set_state("Navigiere in das Semeseter")
-                # semester = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Wintersemester 2021/22"))).click()
+                # leistung_btn = self.driver.find_element_by_xpath("""//a[contains(text(), 'Leistungsübersicht')]""").click()
+                leistung_btn = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, """//*[@id="navi-main"]/li[3]/a"""))).click()
+                semester = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Wintersemester 2021/22"))).click()
                 #semester = self.driver.find_element_by_xpath("//a[contains(text(), 'Wintersemester 2021/22')]").click()
-                self.driver.get("https://qisserver.htwk-leipzig.de/qisserver/rds?state=notenspiegelStudent&next=list.vm&nextdir=qispos/notenspiegel/student&menuid=notenspiegelStudent&createInfos=Y&struct=auswahlBaum&nodeID=auswahlBaum%7Cabschluss%3Aabschl%3D84%2Cstgnr%3D1%7Cstudiengang%3Astg%3DTIB%7Csemester%3Aabschl%3D84%2Cstg%3DTIB%2Csemester%3D20212&expand=0&asi=2xZ.YAqEpykJVOSz$ZjX#auswahlBaum%7Cabschluss%3Aabschl%3D84%2Cstgnr%3D1%7Cstudiengang%3Astg%3DTIB%7Csemester%3Aabschl%3D84%2Cstg%3DTIB%2Csemester%3D20212")
             except Exception as ex:
                 print(ex)
                 raise Exception(ex, "Fehler bei Navigation in QIS")
