@@ -45,19 +45,6 @@ class grades():
         firebase_admin.initialize_app(cred)
         self.db = firestore.client()
 
-        # Storage Init
-        default_app = firebase_admin.initialize_app(cred, {
-            'storageBucket': 'gs://robat-1c1a8.appspot.com'
-        })
-        
-        bucket = storage.bucket()
-        blob = bucket.blob("FZ001.log")
-
-        outfile=r'./bin/check-my-grades/_log/log.txt'
-
-        with open(outfile, 'rb') as my_file:
-            blob.upload_from_file(my_file)
-
         # Reset State
         self.send_heartbeat()
         self._set_state("")
