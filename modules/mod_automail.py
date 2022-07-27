@@ -2,6 +2,7 @@ import smtplib
 from email.message import EmailMessage
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from time import time
 
 from ..main import Main
 
@@ -11,8 +12,132 @@ class automail():
         
         """
 
+    def contructed_message(self, exam, grade, semester, prof, time):
+        return """
+        
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Demystifying Email Design</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
+  </head>
 
-    def run(user_cred, to, subject, msgraw, exam="-", note="0,0"):
+  <body>
+    <div class="container">
+      <div class="row">
+        <h1>Hallo Florian!</h1>
+      </div>
+      <div class="row" style="margin-bottom: 3rem">
+        <h2>Es wurde eine neue Note eingetragen für</h2>
+      </div>
+        <br>
+        <div class="row" style="margin-left: 30%; margin-right:30%; margin-bottom:2rem">
+          <table class="table table-sm">
+              <tr>
+                <td>Modul :</td>
+                <td>%s</td>
+              </tr>
+              <tr>
+                <td>Note :</td>
+                <td>%s</td>
+              </tr>
+              <tr>
+                <td>Semester :</td>
+                <td>%s</td>
+              </tr>
+              <tr>
+                <td>Bearbeiter :</td>
+                <td>%s</td>
+              </tr>
+              <tr>
+                <td>Zeitstempel :</td>
+                <td>%s</td>
+              </tr>
+            </table>
+        </div>
+
+        <div class="row" style="margin-bottom:10px;">
+          <p style="width:100%; text-align:right; margin-left: auto;">Es fehlen nur noch 1 Note</p>
+            <hr style="height: 2px; color: black" />
+        </div>
+          
+        <hr style="margin-top: 10px; margin-bottom: 50px">
+
+        <div class="row" style="margin-bottom: 20px">
+          Somit sieht dein Notenspiegel für das 2. Semester aktuell so aus:
+        </div>
+            
+        <div class="row" style="margin-left: 3%; margin-right:3%; margin-bottom:1rem">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th style="border-bottom: solid rgb(50, 187, 255) 1px" width="260" valign="top">#</th>
+              <th style="border-bottom: solid rgb(50, 187, 255) 1px" width="260" valign="top">Modul</th>
+              <th style="border-bottom: solid rgb(50, 187, 255) 1px" width="260" valign="top">Note</th>
+              <th style="border-bottom: solid rgb(50, 187, 255) 1px" width="260" valign="top">Zeit</th>
+              <th style="border-bottom: solid rgb(50, 187, 255) 1px" width="260" valign="top">Status</th>
+            </tr>
+          </thead>
+          <tr>
+            <td width="260" valign="center">1</td>
+            <td width="260" valign="center">Column 2</td>
+            <td width="260" valign="center">Column 3</td>
+            <td width="260" valign="center">Column 4</td>
+            <td width="260" valign="center"><span class="dot"></span></td>
+          </tr>
+          <tfoot>
+            <tr>
+              <td width="260" valign="center"></td>
+              <td width="260" valign="center">Durchschnitt</td>
+              <td width="260" valign="center">1,0</td>
+              <td width="260" valign="center"></td>
+              <td width="260" valign="center"></td>
+
+            </tr>
+          </tfoot>
+        </table>
+        </div>
+
+            <div class="row" style="margin-bottom:3rem;"> 
+              <p><a href="#">Hier </a> geht es zum QIS-Portal!</p>
+            </div>
+
+
+            <!-- Footer -->
+            <div class="row" style="background-color: rgb(203, 203, 105);">
+              <div class="col" style="padding: 20px">
+                &reg; Someone, somewhere 2013<br />
+                      Unsubscribe to this newsletter instantly
+              </div>
+              <div class="col" style="padding: 20px">
+                <a href="#"> QIS Protal Sachsen - HTWK </a>
+              </div>
+            </div>
+          </div>
+    <style>
+      .dot {
+        height: 25px;
+        width: 25px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
+
+        
+        """ %(exam, grade, semester, prof, time)
+
+
+
+    def run(self, user_cred, to, subject, prof, time, msgraw="-", exam="-", note="0,0"):
         """
         Params:
             user_cred: dict = {"mail_email": "XXX", "mail_pword": "XXX"}
@@ -34,6 +159,8 @@ class automail():
         msg['Subject'] = subject
         msg['From'] = user_cred.get('mail_email')
         msg['To'] = ', '.join(to)
+
+        msgraw = self.contructed_message()
 
         part = MIMEText(msgraw, 'html')
         msg.attach(part)
