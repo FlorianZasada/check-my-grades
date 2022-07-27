@@ -4,53 +4,60 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 class automail():
-    def __init__(self, user_cred, to, subject, msgraw):
+    def __init__(self):
         """
-            user_cred : dict
-            {'email' : 'xy@gmail.com', 'password': 'pw'}
-
-            to : list
-            ['xy@gmai.com', 'zebra@gmx.net']
-
-            subject:  String
-
-            msg : html-String
         
         """
 
-        self.user_cred = user_cred
-        self.to = to
-        self.subject = subject
-        self.msgraw = msgraw
 
-        self.create_mail()
+    def run(user_cred, to, subject, msgraw, exam="-", note="0,0"):
+        """
+        Params:
+            user_cred: dict = {"mail_email": "XXX", "mail_pword": "XXX"}
+            to: list = ["email@mail.com", "mail1@mail.com"],
+            subject: String
+            msgraw: String
+            
+        ---optionals:----
+            exam: String
+            note: String
 
+        Modul schickt eine automatische Mail.
+        
+        """
 
-    def create_mail(self):
-            # msg = MIMEText(msg)
-            msg = MIMEMultipart('alternative')
-            msg['Subject'] = self.subject
-            msg['From'] = self.user_cred.get('email')
-            msg['To'] = ', '.join(self.to)
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = subject
+        msg['From'] = user_cred.get('mail_email')
+        msg['To'] = ', '.join(to)
 
-            part = MIMEText(self.msgraw, 'html')
-            msg.attach(part)
+        part = MIMEText(msgraw, 'html')
+        msg.attach(part)
 
-            server = smtplib.SMTP('smtp.titan.email:587')
-            server.ehlo()
-            server.starttls()
-            # server.ehlo()
-            try:
-                server.login(self.user_cred.get("email"), self.user_cred.get("password"))
-            except:
-                print("Error Loggin into Email Server")
-                return
-            try:
-                server.sendmail(self.user_cred.get("email"), self.to, msg.as_string())
-                print ('email sent')
-            except:
-                print ('error sending mail')
-            server.quit()
+        server = smtplib.SMTP('smtp.gmail.com', 587) 
+        server.ehlo()
+        server.starttls()
+        try:
+            server.login(user_cred.get("mail_email"), user_cred.get("mail_pword"))
+        except Exception as ex:
+            print("FIRST",ex)
+            return
+        try:
+            server.sendmail(user_cred.get("mail_email"), to, msg.as_string())
+        except Exception as ex:
+            print("SECOND", ex)
+            return
+        print("Mail sent successful")
+        server.quit()
 
 if __name__ == '__main__':
-    automail({"email": "notirobi@florianzasada.com", "password": r"%Flomaluju15"}, "florian.zasada@gmail.com", "New", "<h1>HIIII</h1>")
+    with open("email_template.html", "r", encoding='utf-8') as f:
+            text= f.read()
+    
+    automail.run(
+        {"mail_email": "xtract.fea@gmail.com", "mail_pword": r"iumixnesoznogdvr"},
+        ["florian.zasada@gmail.com"],
+        "New",
+        text,
+        "EXAM",
+        "1.9")

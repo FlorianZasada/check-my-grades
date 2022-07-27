@@ -9,5 +9,11 @@ config = {
     # QIS 
     "qis_url": r"https://qisserver.htwk-leipzig.de/qisserver/rds?state=user&type=0",
     "qis_uname": "fzasada",
-    "qis_pword": "4ZRpz7CR"
+    "qis_pword": "4ZRpz7CR",
+
+    # Email
+    "emai_credentials": {
+        "mail_email": "xtract.fea@gmail.com",
+        "mail_pword": r"iumixnesoznogdvr"
+    }
 }
