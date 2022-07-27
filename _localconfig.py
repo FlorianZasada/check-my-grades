@@ -12,8 +12,10 @@ config = {
     "qis_pword": "4ZRpz7CR",
 
     # Email
-    "emai_credentials": {
+    "email_credentials": {
         "mail_email": "xtract.fea@gmail.com",
         "mail_pword": r"iumixnesoznogdvr"
-    }
+    },
+    "mail_priv_email": "florian.zasada@gmail.com"
+
 }

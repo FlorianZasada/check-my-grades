@@ -264,7 +264,7 @@ class Main():
     def sendmail(self, exam, grade, prof, time, average, semester):
         self._set_state("! Sende Mail !")
         user_credentials = config["email_credentials"]
-        to_mail = ["florian.zasada@gmail.com", "florian.zasada@telekom.de"]
+        to_mail = [config["mail_priv_email"], "florian.zasada@telekom.de"]
         subject = f"{exam} - NOTE IST RAUS!!!"
 
         automail.run(user_credentials, to_mail, subject, prof, semester, average, time, exam, grade)
