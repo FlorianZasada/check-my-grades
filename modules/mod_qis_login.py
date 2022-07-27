@@ -1,5 +1,7 @@
 from _localconfig import config
 
+from ..main import Main
+
 class qis_login():
     def __init__(self):
         ### XPaths
@@ -14,6 +16,8 @@ class qis_login():
             qis_pword: String
         
         """
+
+        Main._set_state("qis_login: Starte QIS Login")
         driver.find_element_by_xpath(self.username_xpath).send_keys(qis_uname)
         driver.find_element_by_xpath(self.username_xpath).send_keys(qis_pword)
         driver.find_element_by_xpath(self.login_button_xpath).click()

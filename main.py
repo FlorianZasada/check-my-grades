@@ -38,7 +38,7 @@ from _localconfig import config
 BOT_ID = "recfDz9mQYpPU99pu"
 
 
-class grades():
+class Main():
 
     def __init__(self):
         # Credentials JSON

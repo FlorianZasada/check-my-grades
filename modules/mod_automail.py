@@ -3,6 +3,8 @@ from email.message import EmailMessage
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+from ..main import Main
+
 class automail():
     def __init__(self):
         """
@@ -25,6 +27,8 @@ class automail():
         Modul schickt eine automatische Mail.
         
         """
+
+        Main._set_state("automail: Verschicke Mail '%s'" % subject)
 
         msg = MIMEMultipart('alternative')
         msg['Subject'] = subject
