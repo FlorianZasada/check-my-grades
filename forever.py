@@ -60,7 +60,7 @@ class Forever():
             now = datetime.datetime.now(tz)
             datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
             
-            # Starte Check_grades
+            # Starte Xtract
             COUNTER += 1
             if COUNTER != 0:
                 self._set_restarts(COUNTER)
@@ -82,9 +82,6 @@ class Forever():
         data = {"runtime": runtime}
         doc_ref = self.db.collection(u'bots').document(u'check_grades')
         doc_ref.update(data)
-            
-    def _set_history(self, datum):
-        self.doc_ref.update({u'history': firestore.ArrayUnion([datum])})
 
     def _set_restarts(self, i):
         data = {"automated_restarts": str(i)}

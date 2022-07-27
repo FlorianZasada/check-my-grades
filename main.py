@@ -1,8 +1,10 @@
 from email import message
+from email.contentmanager import raw_data_manager
 from typing import final
 from boto import config
 from bs4 import BeautifulSoup
 import re
+from pip import main
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -17,6 +19,7 @@ import sys
 from modules.mod_automail import automail
 from modules.mod_qis_login import qis_login
 from modules.mod_navigation import navigation
+from modules.mod_calc_average import Calc_average
 
 from boto.s3.connection import S3Connection
 from datetime import datetime, timedelta
@@ -41,6 +44,14 @@ BOT_ID = "recfDz9mQYpPU99pu"
 class Main():
 
     def __init__(self):
+
+        # Frage Semester ab:
+        self.semester = 0
+        while self.semester not in range(1-8):
+            self.semester = input("Welches Semester soll überwacht werden [1-7]? :")
+
+
+
         # Credentials JSON
         cred = credentials.Certificate('/home/pi/bin/check-my-grades/bot_creds.json')
         firebase_admin.initialize_app(cred)
@@ -120,7 +131,7 @@ class Main():
 
             # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
             try:
-                navigation.run(self.driver, "Sommersemester 2022")
+                navigation.run(self.driver, 6)
                 self._set_state("Ins Semester navigiert")
             except Exception as ex:
                 raise Exception(ex, "Fehler bei Navigation in QIS")
@@ -154,16 +165,13 @@ class Main():
                 self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
                 root = self.soup.findAll("tr", {"class" : "MP"})
 
-
-                # Tabelle wird erstellt um eine schönere Dokumentation in der CMD zu ermöglichen
-                x = PrettyTable()
-                x.field_names = ["Modul", "Note"]
-
                 # Hier wird druch die Module iteriert
                 counter = 1
                 avg = 0
                 avg_mid = 0
+                grade_list = []
                 for i in root:
+                    ### Ermittele Exam Name
                     try:
                         for _ in range(5):
                             examName = i.find("span", {"class" : "examName"}).getText()
@@ -175,6 +183,23 @@ class Main():
                     except NoModuleFoundException as ex:
                         raise ex
 
+                    ### Ermittele Exam Prof
+                    try:
+                        for _ in range(5):
+                            comment = i.find("span", {"class" : "comment"}).getText()
+                            prof = re.findall("(Herr|Frau)[^;]*")
+                            if prof:
+                                break
+                            time.sleep(.5)
+                        else:
+                            raise NoModuleFoundException("No Prof")
+                    except NoModuleFoundException as ex:
+                        raise ex
+
+                    ### Ermittele time
+                    time = datetime.now()
+
+                    ### Ermittele Exam Note
                     try: 
                         for _ in range(5):
                             try:
@@ -185,6 +210,7 @@ class Main():
                             if grade == "5":
                                 grade = "0"
                             if grade:
+                                grade_list.append(grade)
                                 break
                             time.sleep(.5)
                         else:
@@ -192,11 +218,12 @@ class Main():
                     except NoGradeFoundException as ex:
                         raise ex
 
+                    average = Calc_average.run(grade_list)
 
-                    # Hinzufügen zur Tabelle
-                    a = x.add_row([examName, grade.strip()])
+
 
                     # Prüft, ob für Modul immernoch kein Eintrag
+                    ### TODO: SQLite
                     if grade.strip() != "-":
                         # tmp erzeugen
                         f = open("tmp.txt", "r+")
@@ -207,15 +234,11 @@ class Main():
                             f.write(examName+"\n")
                             f.close()
 
-                        grade_for_avg = grade.strip().replace(",", ".")
-                        avg_mid += float(grade_for_avg) 
-                        avg = avg_mid / counter
-
 
                         if examName not in z:
                             print(examName +": Note = "+ grade.strip())
                             grade_with_dot_notation = grade.strip().replace(",", ".")
-                            self.sendmail(examName, grade_with_dot_notation)
+                            self.sendmail(examName, grade_with_dot_notation, prof, time, average, self.semestery)
                             counter+=1
                         else:
                             counter+=1
@@ -227,8 +250,6 @@ class Main():
                 
                 # Warte 30 Sekunden
                 self._set_state("Warte 30 Sekunden...")
-                self._set_log(x.get_string())
-
 
                 # Aktualisiere das Fenster
                 self.driver.refresh()
@@ -240,39 +261,14 @@ class Main():
                 return
 
             
-    def sendmail(self, exam, note):
+    def sendmail(self, exam, grade, prof, time, average, semester):
         self._set_state("! Sende Mail !")
         user_credentials = config["email_credentials"]
         to_mail = ["florian.zasada@gmail.com", "florian.zasada@telekom.de"]
         subject = f"{exam} - NOTE IST RAUS!!!"
 
-        report_file = open('email_template.html')
-        html = report_file.read()
-
-        msg = html
-        automail.run(user_credentials, to_mail, subject, msg, exam, note)
-
-
-#         msg = f"""
-#         Hi Leute,
-# <br>ich bins, NotiRobi 2.0.
-# <br>übrigens bin ich umgezogen...ich sitz mir jetzt mein Sitzstahl in einem Raspberry Pi wund ;D
-# <br>
-# <br>Auch dieses Semester überwache ich das Notengeschehen.
-# <br>Wie ihr mich kennt, melde ich mich nur, wenn ich eine Änderung sehe.
-# <br>
-# <br>
-# <br>Und wie ihr euch denken könnt, habe ich eine Änderung festgestellt...
-# <br>
-# <br>            <h2 style="color:red;"><b>Die Note für '{exam}' ist raus!</b></h2>           
-# <br>
-# <br>Schaue jetzt ins <a href="https://qisserver.htwk-leipzig.de/qisserver">QIS-Portal</a> und berichte :) 
-# <br>
-# <br>
-# <br>Liebe Grüße,
-# <br>NotiRobi 2.0
-# """
+        automail.run(user_credentials, to_mail, subject, prof, semester, average, time, exam, grade)
         
         
 if __name__ == '__main__':
-    grades()
+    main()

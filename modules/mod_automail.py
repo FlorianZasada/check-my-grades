@@ -12,7 +12,7 @@ class automail():
         
         """
 
-    def contructed_message(self, exam, grade, semester, prof, time):
+    def contructed_message(self, exam, grade, semester, prof, time, average):
         return """
         
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -92,7 +92,7 @@ class automail():
             <tr>
               <td width="260" valign="center"></td>
               <td width="260" valign="center">Durchschnitt</td>
-              <td width="260" valign="center">1,0</td>
+              <td width="260" valign="center">%d</td>
               <td width="260" valign="center"></td>
               <td width="260" valign="center"></td>
 
@@ -133,16 +133,18 @@ class automail():
 </html>
 
         
-        """ %(exam, grade, semester, prof, time)
+        """ %(exam, grade, semester, prof, time, average)
 
 
 
-    def run(self, user_cred, to, subject, prof, time, msgraw="-", exam="-", note="0,0"):
+    def run(self, user_cred, to, subject, prof, semester, average, time, msgraw="-", exam="-", grade="0,0"):
         """
         Params:
             user_cred: dict = {"mail_email": "XXX", "mail_pword": "XXX"}
             to: list = ["email@mail.com", "mail1@mail.com"],
             subject: String
+            prof: String,
+            average: Float
             msgraw: String
             
         ---optionals:----
@@ -160,7 +162,7 @@ class automail():
         msg['From'] = user_cred.get('mail_email')
         msg['To'] = ', '.join(to)
 
-        msgraw = self.contructed_message()
+        msgraw = self.contructed_message(exam, grade, semester, prof, time, average)
 
         part = MIMEText(msgraw, 'html')
         msg.attach(part)
