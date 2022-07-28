@@ -65,6 +65,13 @@ class Forever():
             
             # Starte Xtract
             COUNTER += 1
+            message="""
+            Xtract wurde um %s das %d. Mal gestartet. 
+            """ %(datetime.datetime.now(), COUNTER)
+            Automail.run(user_cred=config["email_credentials"], to=[config["mail_priv_email"], "florian.zasada@telekom.de"], subject="FEA Neustart!", msgraw=message)
+
+
+
             if COUNTER != 0:
                 self._set_restarts(COUNTER)
                 self._set_history(now.strftime("%H:%M:%S"))
@@ -79,7 +86,7 @@ class Forever():
                 \n
                 '%s'
                 """ %(datetime.datetime.now(), ex)
-                Automail.run(user_cred=config["email_credentials"], to=[config["mail_priv_email"], "florian.zasada@telekom.de"], subject="!Ausfall des Bots!", msgraw="")
+                Automail.run(user_cred=config["email_credentials"], to=[config["mail_priv_email"], "florian.zasada@telekom.de"], subject="!Ausfall des Bots!", msgraw=message)
 
                 # Fehler
 
