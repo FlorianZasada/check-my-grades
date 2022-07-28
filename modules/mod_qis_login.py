@@ -26,4 +26,4 @@ class Qis_login():
             
 
 if __name__ == '__main__':
-    qis_login.run()
+    Qis_login.run()

@@ -3,7 +3,12 @@ from email.message import EmailMessage
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-from ..main import Main
+from mod_sqlite_helper import Sqlite_Helper
+
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# import ../db.py
+from main import Main
 
 class Automail():
     def __init__(self):
@@ -12,10 +17,11 @@ class Automail():
         """
 
     def get_whole_table(self):
-      return 
+      return Sqlite_Helper.get_whole_semester_table 
 
-    def contructed_message(self, exam, grade, semester, prof, time, average, grade_list):
-        return """
+    def contructed_message(self, exam, grade, semester, prof, time, average):
+      grade_list = self.get_whole_table()
+      return """
         
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

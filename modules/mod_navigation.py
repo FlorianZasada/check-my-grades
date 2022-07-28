@@ -36,4 +36,4 @@ class Qis_navigation():
 
 
 if __name__ == '__main__':
-    qis_navigation.run()
+    Qis_navigation.run()

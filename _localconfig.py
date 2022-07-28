@@ -1,3 +1,4 @@
+from os import path
 config = {
 
     # ChromeDriver
@@ -5,6 +6,9 @@ config = {
 
     # Cache
     "cache_folder": r"./cache/cache.txt",
+
+    # Firebase Certificate
+    "certificate_path": path.join("home", "pi", "bin", "check-my-grades", "bot_creds.json"),
 
     # QIS 
     "qis_url": r"https://qisserver.htwk-leipzig.de/qisserver/rds?state=user&type=0",

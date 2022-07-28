@@ -13,7 +13,7 @@ import pytz
 from prettytable import PrettyTable
 import os
 from modules.mod_automail import Automail
-from modules.mod_qis_login import Qis_navigation
+from modules.mod_qis_login import Qis_login
 from modules.mod_navigation import Qis_navigation
 from modules.mod_calc_average import Calc_average
 from modules.mod_sqlite_helper import Sqlite_Helper
@@ -45,7 +45,7 @@ class Main():
 
 
         # Credentials JSON
-        cred = credentials.Certificate('/home/pi/bin/check-my-grades/bot_creds.json')
+        cred = credentials.Certificate(config["certificate_path"])
         firebase_admin.initialize_app(cred)
         self.db = firestore.client()
 
@@ -58,7 +58,6 @@ class Main():
         # Konfiguriert aktuellen Timestamp
         tz = pytz.timezone('Europe/Berlin')
         now = datetime.now(tz)
-        datestring = now.strftime("%d.%m.%Y, %H:%M:%S")
         self._set_state("starte Story")
 
 
