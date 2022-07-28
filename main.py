@@ -1,6 +1,4 @@
-from email import message
 from email.contentmanager import raw_data_manager
-from typing import final
 from boto import config
 from bs4 import BeautifulSoup
 import re
@@ -11,18 +9,16 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
-import time
 import pytz
 from prettytable import PrettyTable
 import os
-import sys
-from modules.mod_automail import automail
-from modules.mod_qis_login import qis_login
-from modules.mod_navigation import navigation
+from modules.mod_automail import Automail
+from modules.mod_qis_login import Qis_navigation
+from modules.mod_navigation import Qis_navigation
 from modules.mod_calc_average import Calc_average
+from modules.mod_sqlite_helper import Sqlite_Helper
 
-from boto.s3.connection import S3Connection
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 from exceptions import NoGradeFoundException, NoModuleFoundException
@@ -30,10 +26,7 @@ import firebase_admin
 from firebase_admin import credentials
 from google.cloud import firestore
 from firebase_admin import firestore
-from firebase_admin import storage
 
-# Import UUID4 to create token
-from uuid import uuid4
 
 from _localconfig import config
 
@@ -49,7 +42,6 @@ class Main():
         self.semester = 0
         while self.semester not in range(1-8):
             self.semester = input("Welches Semester soll überwacht werden [1-7]? :")
-
 
 
         # Credentials JSON
@@ -123,7 +115,7 @@ class Main():
 
             # Anmeldung auf QIS
             try:
-                qis_login.run(self.driver, config["qis_uname"], config["qis_pword"])
+                Qis_login.run(self.driver, config["qis_uname"], config["qis_pword"])
                 self._set_state("In QIS eingeloggt")
             except:
                 raise Exception("Anmeldung fehlgeschlagen")
@@ -131,7 +123,7 @@ class Main():
 
             # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
             try:
-                navigation.run(self.driver, 6)
+                Qis_navigation.run(self.driver, 6)
                 self._set_state("Ins Semester navigiert")
             except Exception as ex:
                 raise Exception(ex, "Fehler bei Navigation in QIS")
@@ -166,11 +158,9 @@ class Main():
                 root = self.soup.findAll("tr", {"class" : "MP"})
 
                 # Hier wird druch die Module iteriert
-                counter = 1
-                avg = 0
-                avg_mid = 0
                 grade_list = []
                 for i in root:
+
                     ### Ermittele Exam Name
                     try:
                         for _ in range(5):
@@ -207,10 +197,10 @@ class Main():
                             except:
                                 grade = i.find('td', {"class" : "grade"}).getText().strip()
                             
-                            if grade == "5":
+                            if grade == "5,0":
                                 grade = "0"
-                            if grade:
-                                grade_list.append(grade)
+                            if grade and grade is not "-":
+                                grade_list.append(grade.strip().replace(",", "."))
                                 break
                             time.sleep(.5)
                         else:
@@ -222,27 +212,15 @@ class Main():
 
 
 
-                    # Prüft, ob für Modul immernoch kein Eintrag
-                    ### TODO: SQLite
+                    # Prüft, ob für Modul immernoch kein Eintrag besteht
                     if grade.strip() != "-":
-                        # tmp erzeugen
-                        f = open("tmp.txt", "r+")
-                        z = f.read()
-                        if examName in z:
+                        if examName in Sqlite_Helper.get_whole_tmp_grades():
                             pass
                         else:
-                            f.write(examName+"\n")
-                            f.close()
-
-
-                        if examName not in z:
-                            print(examName +": Note = "+ grade.strip())
+                            Sqlite_Helper.add_tmp_module(examName, time)
                             grade_with_dot_notation = grade.strip().replace(",", ".")
-                            self.sendmail(examName, grade_with_dot_notation, prof, time, average, self.semestery)
-                            counter+=1
-                        else:
-                            counter+=1
-                            continue
+                            self.sendmail(examName, grade_with_dot_notation, prof, time, average, self.semester)
+                            Sqlite_Helper.add_semester_row(examName, grade, prof, time)
                     else:
                         continue
                 
@@ -266,8 +244,7 @@ class Main():
         user_credentials = config["email_credentials"]
         to_mail = [config["mail_priv_email"], "florian.zasada@telekom.de"]
         subject = f"{exam} - NOTE IST RAUS!!!"
-
-        automail.run(user_credentials, to_mail, subject, prof, semester, average, time, exam, grade)
+        Automail.run(user_credentials, to_mail, subject, prof, semester, average, time, exam, grade)
         
         
 if __name__ == '__main__':

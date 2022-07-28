@@ -2,7 +2,7 @@ from _localconfig import config
 
 from ..main import Main
 
-class qis_login():
+class Qis_login():
     def __init__(self):
         ### XPaths
         self.username_xpath = '//*[@id="username"]'

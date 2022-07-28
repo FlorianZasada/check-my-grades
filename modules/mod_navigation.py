@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from ..main import Main
 
 
-class qis_navigation():
+class Qis_navigation():
     def __init__(self):
         ### XPaths
         self.noten_xpath = '//*[@id="navi-main"]/li[3]/a'

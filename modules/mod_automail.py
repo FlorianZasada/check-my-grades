@@ -6,7 +6,7 @@ from time import time
 
 from ..main import Main
 
-class automail():
+class Automail():
     def __init__(self):
         """
         
