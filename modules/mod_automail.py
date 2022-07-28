@@ -2,7 +2,6 @@ import smtplib
 from email.message import EmailMessage
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from time import time
 
 from ..main import Main
 
@@ -12,7 +11,10 @@ class Automail():
         
         """
 
-    def contructed_message(self, exam, grade, semester, prof, time, average):
+    def get_whole_table(self):
+      return 
+
+    def contructed_message(self, exam, grade, semester, prof, time, average, grade_list):
         return """
         
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -71,34 +73,7 @@ class Automail():
         </div>
             
         <div class="row" style="margin-left: 3%; margin-right:3%; margin-bottom:1rem">
-        <table class="table table-striped table-sm">
-          <thead>
-            <tr>
-              <th style="border-bottom: solid rgb(50, 187, 255) 1px" width="260" valign="top">#</th>
-              <th style="border-bottom: solid rgb(50, 187, 255) 1px" width="260" valign="top">Modul</th>
-              <th style="border-bottom: solid rgb(50, 187, 255) 1px" width="260" valign="top">Note</th>
-              <th style="border-bottom: solid rgb(50, 187, 255) 1px" width="260" valign="top">Zeit</th>
-              <th style="border-bottom: solid rgb(50, 187, 255) 1px" width="260" valign="top">Status</th>
-            </tr>
-          </thead>
-          <tr>
-            <td width="260" valign="center">1</td>
-            <td width="260" valign="center">Column 2</td>
-            <td width="260" valign="center">Column 3</td>
-            <td width="260" valign="center">Column 4</td>
-            <td width="260" valign="center"><span class="dot"></span></td>
-          </tr>
-          <tfoot>
-            <tr>
-              <td width="260" valign="center"></td>
-              <td width="260" valign="center">Durchschnitt</td>
-              <td width="260" valign="center">%d</td>
-              <td width="260" valign="center"></td>
-              <td width="260" valign="center"></td>
-
-            </tr>
-          </tfoot>
-        </table>
+       """ + self.construct_table(grade_list, average) + """
         </div>
 
             <div class="row" style="margin-bottom:3rem;"> 
@@ -133,11 +108,66 @@ class Automail():
 </html>
 
         
-        """ %(exam, grade, semester, prof, time, average)
+        """ %(exam, grade, semester, prof, time)
+
+
+    def construct_table(self, grade_list, average):
+      table_string =  """<table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th style="border-bottom: solid rgb(50, 187, 255) 1px" width="260" valign="top">#</th>
+              <th style="border-bottom: solid rgb(50, 187, 255) 1px" width="260" valign="top">Modul</th>
+              <th style="border-bottom: solid rgb(50, 187, 255) 1px" width="260" valign="top">Note</th>
+              <th style="border-bottom: solid rgb(50, 187, 255) 1px" width="260" valign="top">Zeit</th>
+              <th style="border-bottom: solid rgb(50, 187, 255) 1px" width="260" valign="top">Status</th>
+            </tr>
+          </thead> """
+
+      
+
+      for row in grade_list:
+        if row[2] == "5,0" or row[2] == "5.0":
+          color = "#f00"
+        elif row[2] == "-" or row[2] == "":
+          color = "#bbb"
+        else:
+          color = "#0f0"
+          
+
+        table_string.append(f"""<tr>
+          <td width="260" valign="center">{row[0]}</td>
+          <td width="260" valign="center">{row[1]}</td>
+          <td width="260" valign="center">{row[2]}</td>
+          <td width="260" valign="center">{row[3]}</td>
+          <td width="260" valign="center"><span style="height: 20px;
+                                                        width: 20px;
+                                                        background-color: {color};
+                                                        border-radius: 50%;
+                                                        display: inline-block;">
+                                          </span>
+          </td>
+        </tr>""")
 
 
 
-    def run(self, user_cred, to, subject, prof, semester, average, time, msgraw="-", exam="-", grade="0,0"):
+
+      table_string.append("""<tfoot>
+            <tr>
+              <td width="260" valign="center"></td>
+              <td width="260" valign="center">Durchschnitt</td>
+              <td width="260" valign="center">%d</td>
+              <td width="260" valign="center"></td>
+              <td width="260" valign="center"></td>
+
+            </tr>
+          </tfoot>
+        </table>""" % (average)) 
+
+      return table_string
+
+
+
+    def run(self, user_cred, to, subject, prof, semester, average, time, grade_list, exam="-", grade="0,0"):
         """
         Params:
             user_cred: dict = {"mail_email": "XXX", "mail_pword": "XXX"}
@@ -145,7 +175,8 @@ class Automail():
             subject: String
             prof: String,
             average: Float
-            msgraw: String
+            time: String
+            grade_list: list
             
         ---optionals:----
             exam: String
@@ -162,7 +193,7 @@ class Automail():
         msg['From'] = user_cred.get('mail_email')
         msg['To'] = ', '.join(to)
 
-        msgraw = self.contructed_message(exam, grade, semester, prof, time, average)
+        msgraw = self.contructed_message(exam, grade, semester, prof, time, average, grade_list)
 
         part = MIMEText(msgraw, 'html')
         msg.attach(part)
@@ -187,7 +218,7 @@ if __name__ == '__main__':
     with open("email_template.html", "r", encoding='utf-8') as f:
             text= f.read()
     
-    automail.run(
+    Automail.run(
         {"mail_email": "xtract.fea@gmail.com", "mail_pword": r"iumixnesoznogdvr"},
         ["florian.zasada@gmail.com"],
         "New",

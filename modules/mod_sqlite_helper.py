@@ -5,8 +5,7 @@ from sqlite3 import Error
 
 class Sqlite_Helper():
     def __init__(self):
-        database = r"/Volumes/GoogleDrive/Meine Ablage/Bachlor/check-my-grades/xtract_db.sqlite3"
-
+        database = r"xtract_db.sqlite3"
         # create a database connection
         self.conn = sqlite3.connect(database)
 
@@ -24,7 +23,8 @@ class Sqlite_Helper():
 
         for row in data:
             whole_table.append(row)
-            print(row)
+        print(whole_table)
+        self.conn.close()
         return whole_table
 
     def get_whole_tmp_grades(self):
@@ -41,6 +41,7 @@ class Sqlite_Helper():
         for row in data:
             all_grades.append(row[0])
         print(all_grades)
+        self.conn.close()
         return all_grades
 
     def add_semester_row(self, module, grade, prof, time):
@@ -49,6 +50,7 @@ class Sqlite_Helper():
         try:
             cur.execute("INSERT INTO semester (module, grade, prof, timestamp) VALUES ('%s','%s','%s', '%s')" %(module, grade, prof, time))
             self.conn.commit()
+            self.conn.close()
         except Exception as ex:
             print(ex)
             return False
@@ -60,6 +62,7 @@ class Sqlite_Helper():
         try:
             cur.execute("INSERT INTO tmp (module, timestamp) VALUES ('%s','%s')" %(module, time))
             self.conn.commit()
+            self.conn.close()
         except Exception as ex:
             print(ex)
             return False
@@ -74,4 +77,4 @@ class Sqlite_Helper():
 
 
 if __name__ == '__main__':
-    Sqlite_Helper().get_whole_tmp_grades()
+    Sqlite_Helper().get_whole_semester_table()
