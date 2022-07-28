@@ -9,6 +9,9 @@ from firebase_admin import credentials
 from google.cloud import firestore
 from firebase_admin import firestore
 
+from modules.mod_automail import Automail
+from _localconfig import config
+
 
 BOT_ID = "recfDz9mQYpPU99pu"
 COUNTER = -1
@@ -65,18 +68,25 @@ class Forever():
             if COUNTER != 0:
                 self._set_restarts(COUNTER)
                 self._set_history(now.strftime("%H:%M:%S"))
-                       
-            p = Popen("python /home/pi/bin/check-my-grades/check_grades.py", shell=True)
 
-            clear()
-            p.wait()
+            try:          
+                p = Popen("python /home/pi/bin/check-my-grades/check_grades.py", shell=True)
+                clear()
+                p.wait()
+            except Exception as ex:
+                message="""
+                Xtract ist um %s ausgefallen. Grund dafür ist\n
+                \n
+                '%s'
+                """ %(datetime.datetime.now(), ex)
+                Automail.run(user_cred=config["email_credentials"], to=[config["mail_priv_email"], "florian.zasada@telekom.de"], subject="!Ausfall des Bots!", msgraw="")
 
-            # Fehler
+                # Fehler
 
-            now = datetime.datetime.now(tz)
-            self._set_error(now.strftime("%H:%M:%S"))
-            self._set_runtime(runtime="Inaktiv")
-            sleep(15)
+                now = datetime.datetime.now(tz)
+                self._set_error(now.strftime("%H:%M:%S"))
+                self._set_runtime(runtime="Inaktiv")
+                sleep(15)
 
     def _set_runtime(self, runtime="Aktiv"):
         data = {"runtime": runtime}

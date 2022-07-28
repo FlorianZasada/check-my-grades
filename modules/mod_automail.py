@@ -167,7 +167,7 @@ class Automail():
 
 
 
-    def run(self, user_cred, to, subject, prof, semester, average, time, grade_list, exam="-", grade="0,0"):
+    def run(self, user_cred, to, subject, prof="", semester="", average=0.0, time="", grade_list=[], exam="", grade="0,0", msgraw=""):
         """
         Params:
             user_cred: dict = {"mail_email": "XXX", "mail_pword": "XXX"}
@@ -193,7 +193,10 @@ class Automail():
         msg['From'] = user_cred.get('mail_email')
         msg['To'] = ', '.join(to)
 
-        msgraw = self.contructed_message(exam, grade, semester, prof, time, average, grade_list)
+        if exam and grade and semester and prof and time and average and grade_list:
+          msgraw = self.contructed_message(exam, grade, semester, prof, time, average, grade_list)
+        else:
+          msgraw = msgraw
 
         part = MIMEText(msgraw, 'html')
         msg.attach(part)
