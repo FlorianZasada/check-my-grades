@@ -1,8 +1,6 @@
-from email.contentmanager import raw_data_manager
-from boto import config
+
 from bs4 import BeautifulSoup
 import re
-from pip import main
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -10,16 +8,17 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 import pytz
-from prettytable import PrettyTable
 import os
+
+
 from modules.mod_automail import Automail
 from modules.mod_qis_login import Qis_login
 from modules.mod_navigation import Qis_navigation
 from modules.mod_calc_average import Calc_average
 from modules.mod_sqlite_helper import Sqlite_Helper
+from modules.mod_set_driver import Set_driver
 
 from datetime import datetime
-
 
 from exceptions import NoGradeFoundException, NoModuleFoundException
 import firebase_admin
@@ -39,10 +38,7 @@ class Main():
     def __init__(self):
 
         # Frage Semester ab:
-        self.semester = 0
-        while self.semester not in range(1-8):
-            self.semester = input("Welches Semester soll überwacht werden [1-7]? :")
-
+        self.semester = input("Welches Semester soll überwacht werden [1-7]? :")
 
         # Credentials JSON
         cred = credentials.Certificate(config["certificate_path"])
@@ -62,7 +58,7 @@ class Main():
 
 
         # Starte Story
-        self.main()
+        self.run()
 
     def send_heartbeat(self):
         # Sendet eine Heartbeat Message an die Datenbank
@@ -85,7 +81,7 @@ class Main():
         doc_ref = self.db.collection(u'bots').document(u'check_grades')
         doc_ref.update(data)
 
-    def main(self):
+    def run(self):
         """
             Es wird auf die chromedriver.exe zugegriffen. Diese muss zwingend im Root Ordner liegen.
 
@@ -102,35 +98,45 @@ class Main():
 
             # Öffnen des Browsers sowie den Seiten
             self._set_state("Öffne driver")
-            self.driver = webdriver.Chrome(options = opt, executable_path = config["chromedriver_path"])
+            self.driver = Set_driver.setUp()
+            #self.driver = webdriver.Chrome()#options = opt
             self._set_state("Driver registriert")
+            print("Driver registriert")
 
             try:
                 self._set_state("Öffne QIS URL")
                 self.driver.get(config["qis_url"])
                 
             except:
+                print("URL konnte nicht geöffnet werden")
                 raise Exception("URL konnte nicht geöffnet werden")
 
             # Anmeldung auf QIS
-            try:
-                Qis_login.run(self.driver, config["qis_uname"], config["qis_pword"])
-                self._set_state("In QIS eingeloggt")
-            except:
-                raise Exception("Anmeldung fehlgeschlagen")
+            for att in range(5):
+                print(att)
+                if att == 4:
+                    print("Anmeldung fehlgeschlagen")
+                    raise Exception("Anmeldung fehlgeschlagen")
+                if Qis_login.run(config["qis_uname"], config["qis_pword"]):
+                    self._set_state("In QIS eingeloggt")
+                    break
+                else:
+                    print("Versuche Anmeldung erneut - %d" % att)
             
 
             # Navigieren in die Ordnerstruktur, wo die Noten drinstehen
             try:
                 Qis_navigation.run(self.driver, 6)
+                print("Ins Semester navigiert")
                 self._set_state("Ins Semester navigiert")
             except Exception as ex:
+                print(ex, "Fehler bei Navigation in QIS")
                 raise Exception(ex, "Fehler bei Navigation in QIS")
     
             # Funktionsaufruf (Keine Parameter notwendig (Dauerschleife in sich selbst))
             self.continous_check()
         except Exception as ex:
-            self.driver.close()
+            # self.driver.close()
             self._set_state(":efs: "+ str(ex))
             return
 
@@ -147,10 +153,6 @@ class Main():
             try:
                 # Sende Heartbeat
                 self.send_heartbeat()
-
-                if not os.path.exists("tmp.txt"):
-                    open("tmp.txt", 'w').close()
-
 
                 # Souper wird konfiguriert
                 self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
@@ -210,7 +212,6 @@ class Main():
                     average = Calc_average.run(grade_list)
 
 
-
                     # Prüft, ob für Modul immernoch kein Eintrag besteht
                     if grade.strip() != "-":
                         if examName in Sqlite_Helper.get_whole_tmp_grades():
@@ -223,7 +224,8 @@ class Main():
                     else:
                         continue
                 
-                self.send_heartbeat()
+                self.send_heartbeat(examName, grade, prof, time, average, self.semester)
+                print("CHECK")
                 
                 # Warte 30 Sekunden
                 self._set_state("Warte 30 Sekunden...")
@@ -234,6 +236,7 @@ class Main():
                 
             except Exception as ex:
                 self.driver.close()
+                print(ex)
                 self._set_state(":efs: " + str(ex))
                 return
 
@@ -247,4 +250,4 @@ class Main():
         
         
 if __name__ == '__main__':
-    main()
+    Main()

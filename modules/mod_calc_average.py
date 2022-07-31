@@ -1,9 +1,5 @@
 
 
-
-from numpy import average
-
-
 class Calc_average():
     def __init__(self):
         pass

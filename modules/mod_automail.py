@@ -3,12 +3,10 @@ from email.message import EmailMessage
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-from mod_sqlite_helper import Sqlite_Helper
+from modules.mod_sqlite_helper import Sqlite_Helper
 
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-# import ../db.py
-from main import Main
 
 class Automail():
     def __init__(self):
@@ -192,8 +190,6 @@ class Automail():
         
         """
 
-        Main._set_state("automail: Verschicke Mail '%s'" % subject)
-
         msg = MIMEMultipart('alternative')
         msg['Subject'] = subject
         msg['From'] = user_cred.get('mail_email')
@@ -224,13 +220,13 @@ class Automail():
         server.quit()
 
 if __name__ == '__main__':
-    with open("email_template.html", "r", encoding='utf-8') as f:
-            text= f.read()
-    
-    Automail.run(
-        {"mail_email": "xtract.fea@gmail.com", "mail_pword": r"iumixnesoznogdvr"},
-        ["florian.zasada@gmail.com"],
-        "New",
-        text,
-        "EXAM",
-        "1.9")
+  with open("email_template.html", "r", encoding='utf-8') as f:
+          text= f.read()
+  
+  Automail().run(
+      user_cred={"mail_email": "xtract.fea@gmail.com", "mail_pword": r"iumixnesoznogdvr"},
+      to=["florian.zasada@gmail.com"],
+      subject="New",
+      exam="EXAM",
+      grade="1.9",
+      msgraw=text)

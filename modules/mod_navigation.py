@@ -2,7 +2,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
-from ..main import Main
 
 
 class Qis_navigation():
@@ -28,7 +27,6 @@ class Qis_navigation():
             selected_semester: Int (1 - 7)
 
         """
-        Main._set_state("qis_navigation: Navigiere in das Semester %d" % selected_semester)
         WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, self.noten_xpath))).click()
         smester_partial_text = self.semester_map.get(selected_semester)
         WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, smester_partial_text))).click()
